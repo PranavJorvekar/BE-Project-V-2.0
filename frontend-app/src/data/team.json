@@ -1,0 +1,120 @@
+[
+    {
+        "id": "member-001",
+        "name": "Sarah Chen",
+        "initials": "SC",
+        "role": "Product Lead",
+        "specialization": "Strategic planning & UX",
+        "tasks": 12,
+        "avgCapacity": 75,
+        "weeklyCapacity": [
+            60,
+            75,
+            80,
+            75,
+            65,
+            60,
+            85,
+            70
+        ],
+        "skills": [
+            "React",
+            "PostgreSQL",
+            "Data Modeling",
+            "System Design"
+        ],
+        "experience": "Senior",
+        "weeklyHours": 40,
+        "currentWorkload": 25,
+        "availableHours": 30
+    },
+    {
+        "id": "member-002",
+        "name": "Alex Rivera",
+        "initials": "AR",
+        "role": "Lead Dev",
+        "specialization": "System Architecture & Backend",
+        "tasks": 18,
+        "avgCapacity": 98,
+        "weeklyCapacity": [
+            85,
+            100,
+            100,
+            100,
+            95,
+            85,
+            95,
+            80
+        ],
+        "skills": [
+            "Node.js",
+            "Docker",
+            "GitHub Actions",
+            "Redis",
+            "PostgreSQL"
+        ],
+        "experience": "Senior",
+        "weeklyHours": 40,
+        "currentWorkload": 98,
+        "availableHours": 1
+    },
+    {
+        "id": "member-003",
+        "name": "Jamie Kim",
+        "initials": "JK",
+        "role": "Frontend Dev",
+        "specialization": "React & UI Implementation",
+        "tasks": 9,
+        "avgCapacity": 62,
+        "weeklyCapacity": [
+            30,
+            45,
+            75,
+            80,
+            85,
+            50,
+            40,
+            75
+        ],
+        "skills": [
+            "React",
+            "Tailwind CSS",
+            "TypeScript",
+            "Figma"
+        ],
+        "experience": "Mid",
+        "weeklyHours": 30,
+        "currentWorkload": 60,
+        "availableHours": 12
+    },
+    {
+        "id": "member-004",
+        "name": "Morgan Lee",
+        "initials": "ML",
+        "role": "Full Stack",
+        "specialization": "API Design & Integrations",
+        "tasks": 15,
+        "avgCapacity": 82,
+        "weeklyCapacity": [
+            80,
+            85,
+            80,
+            85,
+            80,
+            85,
+            80,
+            85
+        ],
+        "skills": [
+            "Python",
+            "FastAPI",
+            "React",
+            "AWS",
+            "Docker"
+        ],
+        "experience": "Mid",
+        "weeklyHours": 40,
+        "currentWorkload": 82,
+        "availableHours": 7
+    }
+]

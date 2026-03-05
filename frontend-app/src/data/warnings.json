@@ -1,0 +1,43 @@
+[
+    {
+        "id": "warn-001",
+        "title": "Single Point of Failure",
+        "severity": "Critical",
+        "affectedArea": "Affects 3 Epics",
+        "icon": "person_off",
+        "problem": "Lead Architect (Alex R.) is assigned to 72% of critical path tasks across \"Discovery\" and \"Auth\" epics. His unavailability will delay the project by approximately 3.5 weeks.",
+        "recommendations": [
+            "Reassign \"Database Schema Review\" to Senior Backend Engineer.",
+            "Add a Junior Engineer as shadow for architecture tasks."
+        ],
+        "actionLabel": "Optimize Workload",
+        "dismissed": false
+    },
+    {
+        "id": "warn-002",
+        "title": "Timeline Variance Alert",
+        "severity": "High",
+        "affectedArea": "Affects \"Data Viz\" Epic",
+        "icon": "schedule_send",
+        "problem": "Historical data suggests \"Data Visualization\" tasks for React D3 typically take 40% longer than the 140h currently estimated for EPIC-03.",
+        "recommendations": [
+            "Apply a 1.4x buffer multiplier to chart development tasks.",
+            "Switch to a pre-built charting library (e.g., Recharts) to reduce risk."
+        ],
+        "actionLabel": "Adjust Estimates",
+        "dismissed": false
+    },
+    {
+        "id": "warn-003",
+        "title": "Task Dependency Loop",
+        "severity": "Medium",
+        "affectedArea": "Internal Link Error",
+        "icon": "sync_problem",
+        "problem": "A circular dependency was detected between \"API Documentation\" and \"Final Testing\" in Epic 02. Tasks cannot be scheduled until this is resolved.",
+        "recommendations": [
+            "Remove \"Documentation\" as a hard blocker for \"Testing\"."
+        ],
+        "actionLabel": "Auto-fix Dependency",
+        "dismissed": false
+    }
+]

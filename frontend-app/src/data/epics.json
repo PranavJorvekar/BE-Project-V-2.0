@@ -1,0 +1,101 @@
+[
+    {
+        "id": "epic-001",
+        "projectId": "proj-001",
+        "name": "Discovery & MVP Scoping",
+        "code": "EPIC-01",
+        "taskCount": 6,
+        "totalHours": 40,
+        "priority": "High",
+        "color": "indigo",
+        "goal": "Align project requirements with technical feasibility and define the initial architecture for the Sales Dashboard MVP. Establish data models and security protocols.",
+        "scopeHighlights": [
+            "User flow mapping for sales funnel visualization",
+            "Database schema design for multi-tenant scalability",
+            "Authentication and Authorization architecture (RBAC)"
+        ],
+        "tasks": [
+            {
+                "id": "TASK-001",
+                "name": "Define core data entities & relations",
+                "effort": 8
+            },
+            {
+                "id": "TASK-002",
+                "name": "Setup project boilerplate & CI/CD pipeline",
+                "effort": 12
+            },
+            {
+                "id": "TASK-003",
+                "name": "Identify API endpoints for dashboard widgets",
+                "effort": 6
+            }
+        ]
+    },
+    {
+        "id": "epic-002",
+        "projectId": "proj-001",
+        "name": "Authentication & User Management",
+        "code": "EPIC-02",
+        "taskCount": 12,
+        "totalHours": 80,
+        "priority": "High",
+        "color": "purple",
+        "goal": "Implement secure multi-tenant authentication with RBAC support and OAuth integration.",
+        "scopeHighlights": [
+            "OAuth2 provider integration (Google, GitHub)",
+            "Role-based access control (Admin, Manager, Viewer)",
+            "JWT token management and refresh flow"
+        ],
+        "tasks": [
+            {
+                "id": "TASK-004",
+                "name": "OAuth2 Provider Integration",
+                "effort": 16
+            },
+            {
+                "id": "TASK-005",
+                "name": "RBAC implementation",
+                "effort": 12
+            },
+            {
+                "id": "TASK-006",
+                "name": "JWT middleware setup",
+                "effort": 8
+            }
+        ]
+    },
+    {
+        "id": "epic-003",
+        "projectId": "proj-001",
+        "name": "Dashboard Data Viz Engine",
+        "code": "EPIC-03",
+        "taskCount": 18,
+        "totalHours": 140,
+        "priority": "Medium",
+        "color": "blue",
+        "goal": "Build the core data visualization components including charts, tables, and real-time data feeds.",
+        "scopeHighlights": [
+            "Sales funnel chart component",
+            "Real-time data WebSocket connection",
+            "Exportable PDF reports"
+        ],
+        "tasks": [
+            {
+                "id": "TASK-007",
+                "name": "Chart component library setup",
+                "effort": 8
+            },
+            {
+                "id": "TASK-008",
+                "name": "Sales funnel component",
+                "effort": 16
+            },
+            {
+                "id": "TASK-009",
+                "name": "Real-time data integration",
+                "effort": 20
+            }
+        ]
+    }
+]

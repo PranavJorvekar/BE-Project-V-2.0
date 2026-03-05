@@ -1,0 +1,283 @@
+[
+    {
+        "id": "TASK-001",
+        "epicId": "epic-001",
+        "epicName": "Discovery",
+        "epicColor": "indigo",
+        "name": "Define core data entities & relations",
+        "assignee": {
+            "name": "Sarah Chen",
+            "initials": "SC",
+            "role": "Senior Backend Engineer"
+        },
+        "effort": 8,
+        "priority": "High",
+        "description": "Establish the foundational data architecture for the project. Identify all core entities for the MVP and define their relationships (1:1, 1:N, N:N). Focus on Workspace, User, Project, and Task entities with multi-tenant isolation logic.",
+        "skills": [
+            "React",
+            "PostgreSQL",
+            "Data Modeling"
+        ],
+        "fitScore": 92,
+        "aiReasoning": "Sarah Chen is the optimal choice for this task due to her extensive experience in database schema optimization and multi-tenant architectures. High overlap detected: She recently completed infrastructure scaling work which involved similar data relationship complexities.",
+        "definitionOfDone": [
+            {
+                "id": 1,
+                "text": "ER Diagram created in Mermaid.js",
+                "done": true
+            },
+            {
+                "id": 2,
+                "text": "Schema documented in Notion",
+                "done": false
+            },
+            {
+                "id": 3,
+                "text": "Initial migration script generated",
+                "done": false
+            },
+            {
+                "id": 4,
+                "text": "Team review completed",
+                "done": false
+            }
+        ],
+        "prerequisites": [
+            {
+                "id": "TASK-004",
+                "name": "Market Research Analysis",
+                "status": "Done"
+            },
+            {
+                "id": "TASK-008",
+                "name": "Product Requirements Doc",
+                "status": "Done"
+            }
+        ],
+        "blockedBy": [],
+        "blocks": [
+            {
+                "id": "TASK-012",
+                "name": "API Schema Implementation",
+                "status": "Blocked"
+            },
+            {
+                "id": "TASK-015",
+                "name": "UI Data Mapping",
+                "status": "Blocked"
+            }
+        ],
+        "alternatives": [
+            {
+                "name": "Marcus Thorne",
+                "role": "Full Stack Developer",
+                "score": 84
+            },
+            {
+                "name": "Elena Rodriguez",
+                "role": "Frontend Lead",
+                "score": 71
+            }
+        ]
+    },
+    {
+        "id": "TASK-002",
+        "epicId": "epic-001",
+        "epicName": "Discovery",
+        "epicColor": "indigo",
+        "name": "Setup project boilerplate & CI/CD pipeline",
+        "assignee": {
+            "name": "Alex Rivera",
+            "initials": "AR",
+            "role": "Lead Developer"
+        },
+        "effort": 12,
+        "priority": "Medium",
+        "description": "Initialize the project repository with a production-grade boilerplate including linting, formatting, testing setup, and a CI/CD pipeline for automated deployments.",
+        "skills": [
+            "Node.js",
+            "Docker",
+            "GitHub Actions"
+        ],
+        "fitScore": 88,
+        "aiReasoning": "Alex Rivera's expertise in DevOps and system architecture makes him the best fit for setting up the CI/CD pipeline. His experience with Docker and GitHub Actions ensures a robust setup.",
+        "definitionOfDone": [
+            {
+                "id": 1,
+                "text": "Repository initialized with boilerplate",
+                "done": true
+            },
+            {
+                "id": 2,
+                "text": "CI/CD pipeline runs on PR",
+                "done": true
+            },
+            {
+                "id": 3,
+                "text": "Environment variables documented",
+                "done": false
+            }
+        ],
+        "prerequisites": [],
+        "blockedBy": [],
+        "blocks": [
+            {
+                "id": "TASK-003",
+                "name": "API endpoint identification",
+                "status": "Waiting"
+            }
+        ],
+        "alternatives": [
+            {
+                "name": "Morgan Lee",
+                "role": "Full Stack Developer",
+                "score": 79
+            }
+        ]
+    },
+    {
+        "id": "TASK-003",
+        "epicId": "epic-001",
+        "epicName": "Discovery",
+        "epicColor": "indigo",
+        "name": "Identify API endpoints for dashboard widgets",
+        "assignee": {
+            "name": "Sarah Chen",
+            "initials": "SC",
+            "role": "Senior Backend Engineer"
+        },
+        "effort": 6,
+        "priority": "High",
+        "description": "Map out all the API endpoints required to support the dashboard widgets including real-time data feeds, aggregated metrics, and filter options.",
+        "skills": [
+            "REST API",
+            "PostgreSQL",
+            "System Design"
+        ],
+        "fitScore": 95,
+        "aiReasoning": "Sarah's deep understanding of the data model and her backend expertise make her ideal for designing the API contract.",
+        "definitionOfDone": [
+            {
+                "id": 1,
+                "text": "API contract documented in OpenAPI",
+                "done": false
+            },
+            {
+                "id": 2,
+                "text": "Endpoint list reviewed by team",
+                "done": false
+            }
+        ],
+        "prerequisites": [
+            {
+                "id": "TASK-001",
+                "name": "Define core data entities",
+                "status": "In Progress"
+            }
+        ],
+        "blockedBy": [
+            "TASK-001"
+        ],
+        "blocks": [],
+        "alternatives": [
+            {
+                "name": "Alex Rivera",
+                "role": "Lead Developer",
+                "score": 76
+            }
+        ]
+    },
+    {
+        "id": "TASK-004",
+        "epicId": "epic-002",
+        "epicName": "Auth & User",
+        "epicColor": "indigo",
+        "name": "OAuth2 Provider Integration",
+        "assignee": {
+            "name": "Marcus Thorne",
+            "initials": "MT",
+            "role": "Full Stack Developer"
+        },
+        "effort": 16,
+        "priority": "High",
+        "description": "Integrate Google and GitHub OAuth2 providers for user authentication. Implement the OAuth flow, token exchange, and session management.",
+        "skills": [
+            "OAuth2",
+            "Node.js",
+            "JWT"
+        ],
+        "fitScore": 84,
+        "aiReasoning": "Marcus has prior experience implementing OAuth flows and is familiar with the Passport.js library used in the project.",
+        "definitionOfDone": [
+            {
+                "id": 1,
+                "text": "Google OAuth working in staging",
+                "done": false
+            },
+            {
+                "id": 2,
+                "text": "GitHub OAuth working in staging",
+                "done": false
+            },
+            {
+                "id": 3,
+                "text": "Session persistence tested",
+                "done": false
+            }
+        ],
+        "prerequisites": [
+            {
+                "id": "TASK-002",
+                "name": "Project boilerplate setup",
+                "status": "Done"
+            }
+        ],
+        "blockedBy": [],
+        "blocks": [],
+        "alternatives": [
+            {
+                "name": "Sarah Chen",
+                "role": "Senior Backend Engineer",
+                "score": 71
+            }
+        ]
+    },
+    {
+        "id": "TASK-005",
+        "epicId": "epic-002",
+        "epicName": "Auth & User",
+        "epicColor": "indigo",
+        "name": "API rate limiting middleware",
+        "assignee": {
+            "name": "Alex Rivera",
+            "initials": "AR",
+            "role": "Lead Developer"
+        },
+        "effort": 4,
+        "priority": "Medium",
+        "description": "Implement rate limiting middleware to protect API endpoints from abuse. Configure per-user and per-IP rate limits.",
+        "skills": [
+            "Node.js",
+            "Redis",
+            "Security"
+        ],
+        "fitScore": 91,
+        "aiReasoning": "Alex has hands-on experience with Redis-based rate limiting and has implemented similar middleware in past projects.",
+        "definitionOfDone": [
+            {
+                "id": 1,
+                "text": "Rate limiting applied to all routes",
+                "done": false
+            },
+            {
+                "id": 2,
+                "text": "Redis connection configured",
+                "done": false
+            }
+        ],
+        "prerequisites": [],
+        "blockedBy": [],
+        "blocks": [],
+        "alternatives": []
+    }
+]

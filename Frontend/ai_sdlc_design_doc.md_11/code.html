@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI SDLC Analyst - Plan Sharing &amp; Tool Integrations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary-600: #4F46E5;
+            --primary-500: #6366F1;
+            --primary-700: #3730A3;
+            --primary-50: #EEF2FF;
+            --gray-900: #111827;
+            --gray-800: #1F2937;
+            --gray-700: #374151;
+            --gray-600: #4B5563;
+            --gray-500: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-100: #F3F4F6;
+            --gray-50: #F9FAFB;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+        }
+        .form-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .integration-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-100);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<header class="bg-white border-b border-gray-200 py-4 px-6 sticky top-0 z-30">
+<div class="max-w-5xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-[var(--primary-600)] rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-xl">auto_awesome</span>
+</div>
+<span class="font-bold text-lg tracking-tight">AI SDLC Analyst</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[var(--gray-600)] hover:text-[var(--gray-900)] font-medium text-sm">Dashboard</button>
+<div class="h-4 w-[1px] bg-gray-200"></div>
+<button class="bg-[var(--primary-600)] text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-[var(--primary-700)] transition-colors">New Project</button>
+</div>
+</div>
+</header>
+<main class="flex-grow py-12 px-6">
+<div class="max-w-4xl mx-auto">
+<div class="mb-10">
+<div class="flex items-center gap-2 text-[var(--primary-600)] mb-2">
+<span class="material-symbols-outlined text-sm">check_circle</span>
+<span class="text-xs font-bold uppercase tracking-widest">Plan Generated Successfully</span>
+</div>
+<h1 class="text-3xl font-bold text-[var(--gray-900)]">Share &amp; Export Your Plan</h1>
+<p class="text-[var(--gray-600)] mt-2">Connect your development tools or share a secure link with your team.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-6">
+<h2 class="text-sm font-bold text-[var(--gray-900)] uppercase tracking-wider">Share Link</h2>
+<div class="form-card">
+<p class="text-sm text-[var(--gray-600)] mb-4">Anyone with the link can view the interactive development plan.</p>
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-semibold text-[var(--gray-500)] mb-1.5 uppercase">Link Expiration</label>
+<select class="w-full bg-white border-gray-300 rounded-lg text-sm focus:ring-[var(--primary-600)] focus:border-[var(--primary-600)]">
+<option>7 days</option>
+<option selected="">30 days</option>
+<option>90 days</option>
+<option>Never</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-semibold text-[var(--gray-500)] mb-1.5 uppercase">Project URL</label>
+<div class="flex gap-2">
+<div class="relative flex-grow">
+<input class="w-full bg-[var(--gray-50)] border-gray-300 rounded-lg text-sm text-[var(--gray-600)] focus:ring-0 focus:border-gray-300" readonly="" type="text" value="https://app.sdlc-analyst.ai/share/v3_fn_92k01"/>
+</div>
+<button class="bg-[var(--primary-600)] text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-[var(--primary-700)] transition-colors">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+<span class="text-sm font-medium">Copy</span>
+</button>
+</div>
+</div>
+<div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+<span class="text-xs text-[var(--gray-500)]">Restricted to viewers with the link</span>
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-6 h-6 rounded-full bg-indigo-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-indigo-600">AS</div>
+<div class="w-6 h-6 rounded-full bg-emerald-100 border-2 border-white flex items-center justify-center text-[10px] font-bold text-emerald-600">+3</div>
+</div>
+</div>
+</div>
+</div>
+<div class="form-card bg-indigo-50 border-indigo-100">
+<div class="flex gap-4">
+<div class="text-[var(--primary-600)]">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-[var(--primary-700)]">Export as PDF / Markdown</h4>
+<p class="text-xs text-indigo-600/80 mt-1">Download a static version of the plan for documentation.</p>
+<button class="mt-3 text-sm font-semibold text-[var(--primary-700)] hover:underline flex items-center gap-1">
+                                    View Export Options <span class="material-symbols-outlined text-sm">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6">
+<h2 class="text-sm font-bold text-[var(--gray-900)] uppercase tracking-wider">Tool Integrations</h2>
+<div class="form-card space-y-6">
+<p class="text-sm text-[var(--gray-600)]">Sync your epics and tasks directly to your project management tool.</p>
+<div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-indigo-200 transition-colors">
+<div class="flex items-center gap-4">
+<div class="integration-logo">
+<span class="material-symbols-outlined text-blue-600">view_kanban</span>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-[var(--gray-900)]">Jira Software</h4>
+<p class="text-xs text-[var(--gray-500)]">Sync epics &amp; tickets</p>
+</div>
+</div>
+<button class="text-sm font-semibold text-[var(--primary-600)] border border-[var(--primary-600)] px-4 py-1.5 rounded-lg hover:bg-[var(--primary-50)] transition-colors">
+                                Connect
+                            </button>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-indigo-200 transition-colors">
+<div class="flex items-center gap-4">
+<div class="integration-logo">
+<span class="material-symbols-outlined text-purple-600">tactic</span>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-[var(--gray-900)]">Linear</h4>
+<p class="text-xs text-[var(--gray-500)]">Automate issue creation</p>
+</div>
+</div>
+<button class="text-sm font-semibold text-[var(--primary-600)] border border-[var(--primary-600)] px-4 py-1.5 rounded-lg hover:bg-[var(--primary-50)] transition-colors">
+                                Connect
+                            </button>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:border-indigo-200 transition-colors opacity-60">
+<div class="flex items-center gap-4">
+<div class="integration-logo">
+<span class="material-symbols-outlined text-orange-500">chat_bubble</span>
+</div>
+<div>
+<h4 class="text-sm font-semibold text-[var(--gray-900)]">Slack Notifications</h4>
+<p class="text-xs text-[var(--gray-500)]">Status updates &amp; alerts</p>
+</div>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-tight bg-gray-100 text-gray-500 px-2 py-1 rounded">Soon</span>
+</div>
+<div class="bg-[var(--gray-50)] p-3 rounded-lg">
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-[var(--gray-400)] text-lg">info</span>
+<p class="text-[11px] text-[var(--gray-500)] leading-relaxed">
+                                    Connected tools will automatically receive the breakdown of tasks once you confirm the synchronization settings.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-gray-200 py-6 px-6">
+<div class="max-w-4xl mx-auto flex items-center justify-between">
+<button class="text-[var(--gray-600)] hover:text-[var(--gray-900)] font-medium text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">arrow_back</span>
+                Back to Review
+            </button>
+<div class="flex gap-3">
+<button class="text-[var(--gray-700)] bg-white border border-gray-300 px-6 py-2.5 rounded-lg font-medium text-sm hover:bg-gray-50">Save as Draft</button>
+<button class="bg-[var(--primary-600)] text-white px-8 py-2.5 rounded-lg font-medium text-sm hover:bg-[var(--primary-700)] shadow-sm shadow-indigo-200">Go to Project Dashboard</button>
+</div>
+</div>
+</footer>
+
+</body></html>

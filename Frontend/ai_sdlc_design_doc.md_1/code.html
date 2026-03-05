@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Setup Wizard: Product Details | AI SDLC Analyst</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary-indigo: #4F46E5;
+            --hover-indigo: #6366F1;
+            --pressed-indigo: #3730A3;
+            --bg-indigo: #EEF2FF;
+            --success-green: #10B981;
+            --warning-amber: #F59E0B;
+            --error-red: #EF4444;
+            --ai-purple: #8B5CF6;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-500: #6B7280;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-50: #F9FAFB;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+        }
+        .stepper-line {
+            height: 2px;
+            background-color: var(--gray-200);
+            flex-grow: 1;
+            margin: 0 1rem;
+        }
+        .form-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            transition: all 150ms ease;
+        }
+        .form-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-color: var(--gray-300);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--gray-200);
+            border-radius: 9999px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary-indigo);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--hover-indigo);
+            transform: scale(1.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+<header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+<div class="max-w-4xl mx-auto px-4 h-20 flex flex-col justify-center">
+<div class="flex items-center justify-between w-full">
+<div class="flex items-center text-indigo-600 font-semibold">
+<div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-sm mr-2">1</div>
+<span class="hidden sm:inline">Product Details</span>
+</div>
+<div class="stepper-line"></div>
+<div class="flex items-center text-gray-400">
+<div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm mr-2">2</div>
+<span class="hidden sm:inline">Team</span>
+</div>
+<div class="stepper-line"></div>
+<div class="flex items-center text-gray-400">
+<div class="w-8 h-8 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center text-sm mr-2">3</div>
+<span class="hidden sm:inline">Review</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow py-12 px-4">
+<div class="max-w-3xl mx-auto space-y-6">
+<div class="flex items-center justify-between">
+<div>
+<h1 class="text-3xl font-bold text-gray-900">Configure Product Details</h1>
+<p class="text-gray-600 mt-2">Provide the vision for your MVP to help AI generate a precise plan.</p>
+</div>
+<div class="hidden sm:flex items-center bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-medium border border-green-100">
+<span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                    Saved
+                </div>
+</div>
+<div class="space-y-6">
+<div class="form-card">
+<label class="block text-sm font-semibold text-gray-900 mb-2" for="product_name">
+                        Product Name <span class="text-red-500">*</span>
+</label>
+<input class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2.5" id="product_name" maxlength="100" name="product_name" placeholder="e.g., Sales Tracking Dashboard" type="text"/>
+</div>
+<div class="form-card">
+<div class="flex justify-between items-center mb-2">
+<label class="block text-sm font-semibold text-gray-900" for="description">
+                            Describe your product <span class="text-red-500">*</span>
+</label>
+<span class="text-xs text-gray-500">0 / 500 characters</span>
+</div>
+<textarea class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2.5 resize-none" id="description" name="description" placeholder="Explain what your product does and who it's for..." rows="4"></textarea>
+<p class="mt-2 text-xs text-gray-500 italic">100-500 words recommended for best results.</p>
+</div>
+<div class="form-card">
+<div class="flex justify-between items-center mb-4">
+<label class="block text-sm font-semibold text-gray-900">
+                            Key Features or User Stories <span class="text-red-500">*</span>
+</label>
+<span class="text-xs text-gray-500">List 5-10 essential features</span>
+</div>
+<div class="space-y-3">
+<div class="flex gap-2">
+<input class="flex-grow border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2" placeholder="e.g., User authentication via OAuth" type="text"/>
+<button class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="flex-grow border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2" placeholder="e.g., Real-time data visualization charts" type="text"/>
+<button class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+<div class="flex gap-2">
+<input class="flex-grow border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2" placeholder="e.g., Automated report generation (PDF)" type="text"/>
+<button class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<button class="mt-4 flex items-center text-sm font-medium text-indigo-600 hover:text-indigo-700">
+<span class="material-symbols-outlined text-base mr-1">add</span>
+                        Add Feature
+                    </button>
+</div>
+<div class="form-card">
+<label class="block text-sm font-semibold text-gray-900 mb-4">What matters most for your MVP?</label>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">Performance</span>
+</label>
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input checked="" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">User Experience</span>
+</label>
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input checked="" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">Time-to-Market</span>
+</label>
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">Security</span>
+</label>
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">Scalability</span>
+</label>
+<label class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+<input class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" type="checkbox"/>
+<span class="text-sm text-gray-700">Cost Efficiency</span>
+</label>
+</div>
+</div>
+<div class="form-card">
+<label class="block text-sm font-semibold text-gray-900 mb-2">Target Technologies</label>
+<div class="flex flex-wrap gap-2 mb-3">
+<span class="inline-flex items-center bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium border border-indigo-100">
+                            React <span class="material-symbols-outlined text-xs ml-1 cursor-pointer">close</span>
+</span>
+<span class="inline-flex items-center bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium border border-indigo-100">
+                            Node.js <span class="material-symbols-outlined text-xs ml-1 cursor-pointer">close</span>
+</span>
+<span class="inline-flex items-center bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium border border-indigo-100">
+                            PostgreSQL <span class="material-symbols-outlined text-xs ml-1 cursor-pointer">close</span>
+</span>
+</div>
+<input class="w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-4 py-2" placeholder="Type to search (e.g., AWS, Tailwind, Vue)..." type="text"/>
+</div>
+<div class="form-card">
+<div class="flex justify-between items-center mb-4">
+<label class="block text-sm font-semibold text-gray-900">MVP Timeline (weeks)</label>
+<div class="bg-indigo-600 text-white font-bold px-3 py-1 rounded text-lg">8</div>
+</div>
+<input class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" max="12" min="4" step="1" type="range" value="8"/>
+<div class="flex justify-between mt-2 text-xs text-gray-500 font-medium">
+<span>4 weeks</span>
+<span>12+ weeks</span>
+</div>
+<div class="mt-6 flex items-start p-3 bg-blue-50 border-l-4 border-blue-400 rounded">
+<span class="material-symbols-outlined text-blue-500 mr-2 text-xl">info</span>
+<p class="text-sm text-blue-700">Most startups target 6-10 weeks for an MVP. An 8-week timeline provides a balanced scope-to-speed ratio.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-gray-200 py-4 px-6 fixed bottom-0 left-0 right-0 z-10">
+<div class="max-w-4xl mx-auto flex items-center justify-between">
+<button class="text-gray-600 font-medium hover:bg-gray-50 px-4 py-2 rounded-md transition-colors">
+                Save Draft
+            </button>
+<div class="flex gap-4">
+<button class="bg-indigo-600 text-white font-semibold px-8 py-2.5 rounded-md hover:bg-indigo-700 shadow-sm transition-all flex items-center">
+                    Next: Team
+                    <span class="material-symbols-outlined ml-2 text-base">arrow_forward</span>
+</button>
+</div>
+</div>
+</footer>
+<div class="h-24"></div>
+
+</body></html>

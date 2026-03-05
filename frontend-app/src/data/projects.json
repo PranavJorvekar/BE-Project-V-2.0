@@ -1,0 +1,50 @@
+[
+  {
+    "id": "proj-001",
+    "name": "Sales Dashboard MVP",
+    "description": "Enterprise-grade sales tracking and predictive analytics module for the core platform.",
+    "status": "IN_PLANNING",
+    "progress": 15,
+    "epicCount": 4,
+    "taskCount": 24,
+    "team": ["SC", "AR", "JK"],
+    "createdAt": "2026-03-01",
+    "updatedAt": "2026-03-05"
+  },
+  {
+    "id": "proj-002",
+    "name": "Mobile App Redesign",
+    "description": "Complete UI overhaul of the iOS and Android applications following the new design system.",
+    "status": "IN_PROGRESS",
+    "progress": 62,
+    "epicCount": 8,
+    "taskCount": 52,
+    "team": ["ML", "JK", "AR", "SC", "TN"],
+    "createdAt": "2026-01-15",
+    "updatedAt": "2026-03-04"
+  },
+  {
+    "id": "proj-003",
+    "name": "API Integration v2",
+    "description": "Standardizing external API endpoints and webhooks for third-party developer access.",
+    "status": "COMPLETED",
+    "progress": 100,
+    "epicCount": 2,
+    "taskCount": 18,
+    "team": ["AR", "ML"],
+    "createdAt": "2025-11-01",
+    "updatedAt": "2026-02-28"
+  },
+  {
+    "id": "proj-004",
+    "name": "Customer Portal",
+    "description": "Self-service portal for enterprise customers to manage their subscription and usage stats.",
+    "status": "IN_PLANNING",
+    "progress": 0,
+    "epicCount": 5,
+    "taskCount": 41,
+    "team": ["SC"],
+    "createdAt": "2026-03-03",
+    "updatedAt": "2026-03-03"
+  }
+]

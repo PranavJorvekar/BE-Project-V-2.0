@@ -1,0 +1,374 @@
+AI SDLC Analyst: Technical Rules and Technology Stack
+Version: 1.0
+Date: March 4, 2026
+Project: AI SDLC Analyst - AI-powered SDLC planning and task assignment assistant
+Executive Summary
+This document defines the comprehensive technical rules and technology stack for the AI SDLC Analyst project. The technology choices prioritize rapid development, AI integration, scalability, and startup-friendliness while maintaining production-grade reliability. The stack is designed to support both the immediate MVP delivery and future scaling requirements.
+Technology Stack Overview
+The AI SDLC Analyst employs a modern, AI-native SaaS architecture built on proven technologies. The stack emphasizes:
+Type-safe development across frontend and backend
+Native AI integration with multiple LLM providers
+Flexible deployment with containerization
+Real-time collaboration capabilities
+Enterprise-grade security and authentication
+Cost-effective scaling for startup economics
+Frontend Technology Stack
+Core Framework: Next.js 15+ with React
+Technology: Next.js 15+ (App Router)
+Justification: Next.js provides server-side rendering (SSR), API routes for backend integration, and excellent performance for AI-powered interfaces[1]. The App Router architecture enables streaming UI updates, which is critical for real-time AI task generation feedback.
+Technical Rules:
+Use App Router exclusively (not Pages Router) for all new development
+Implement Server Components by default; use Client Components only when client-side interactivity is required
+All data fetching should use React Server Components pattern for optimal performance
+Enable Incremental Static Regeneration (ISR) for frequently accessed but slowly changing pages
+Implement route-level code splitting to minimize bundle sizes
+UI Framework and Styling
+Technologies:
+Tailwind CSS v4+ for utility-first styling
+shadcn/ui for pre-built accessible components
+Radix UI primitives for complex interactive components
+Technical Rules:
+Follow Tailwind's mobile-first responsive design approach
+Use shadcn/ui components as base, customize via Tailwind configuration
+Maintain consistent design tokens in tailwind.config.ts
+Implement dark mode support using Tailwind's dark variant
+All custom components must meet WCAG 2.1 AA accessibility standards
+Maximum CSS bundle size: 150KB gzipped
+State Management and Data Fetching
+Technologies:
+TanStack Query (React Query) v5+ for server state management
+Zustand for lightweight client state management
+Vercel AI SDK for streaming AI responses
+Technical Rules:
+Use TanStack Query for all API calls and server data
+Implement optimistic updates for task assignment operations
+Configure query cache with 5-minute stale time for non-critical data
+Use Zustand only for UI state (modals, forms, temporary selections)
+Never duplicate server state in Zustand stores
+Implement error boundaries for all async operations
+Real-time AI Streaming
+Technology: Vercel AI SDK v3+
+Technical Rules:
+Use useChat hook for conversational AI interactions
+Implement useCompletion for single-shot AI generations (epic generation, task breakdown)
+Stream all AI responses to frontend for progressive rendering
+Display loading states and token streaming indicators
+Implement cancel functionality for long-running AI operations
+Handle streaming errors gracefully with retry mechanisms
+Backend Technology Stack
+Runtime and Framework: Node.js with TypeScript
+Technology: Node.js 20 LTS + TypeScript 5.4+
+Framework: Fastify v4+ (preferred) or Express v5+ (alternative)
+Justification: Node.js provides unified JavaScript/TypeScript across frontend and backend, excellent async handling for AI API calls, and strong ecosystem support[1][3]. TypeScript ensures type safety and reduces runtime errors.
+Technical Rules:
+All backend code must be written in TypeScript with strict mode enabled
+Use ES modules (import/export), not CommonJS (require)
+Enable strictNullChecks, noImplicitAny, and noUnusedLocals in tsconfig.json
+Minimum Node.js version: 20.x LTS
+Use Fastify for new services due to superior performance (3x faster than Express)
+Implement request validation using Zod schemas
+Maximum API response time: 5 seconds (excluding AI operations)
+API Design Standards
+Style: RESTful API with GraphQL consideration for v2
+Technical Rules:
+Follow REST conventions: GET (read), POST (create), PUT (replace), PATCH (update), DELETE (remove)
+Use semantic versioning in API routes: /api/v1/projects, /api/v1/tasks
+Return consistent error structure:
+
+Use HTTP status codes correctly: 200 (success), 201 (created), 400 (client error), 401 (unauthorized), 403 (forbidden), 404 (not found), 500 (server error)
+Implement CORS with explicit allowed origins (no wildcards in production)
+All responses must include Content-Type: application/json
+Implement rate limiting: 100 requests/minute per user, 1000 requests/hour total
+Background Job Processing
+Technologies:
+BullMQ v5+ for job queue management
+Redis v7+ for queue backing and caching
+Justification: AI task generation and assignment can take 10-60 seconds. Background jobs prevent request timeouts and enable parallel processing[1].
+Technical Rules:
+Use BullMQ for all operations exceeding 3 seconds
+Job types: generate-epics, breakdown-tasks, assign-tasks, export-plan
+Implement job retry logic: 3 attempts with exponential backoff
+Store job results in database with 7-day retention
+Send WebSocket notifications on job completion
+Maximum concurrent jobs per user: 5
+Job timeout: 5 minutes
+Database and Data Persistence
+Primary Database: PostgreSQL
+Technology: PostgreSQL 16+ with pgvector extension
+Hosting: Supabase (preferred) or Neon for managed PostgreSQL
+Justification: PostgreSQL provides robust relational data management, JSONB support for flexible schemas, and pgvector for AI embedding storage[1][4].
+Technical Rules:
+Use PostgreSQL 16+ for production and development environments
+Enable pgvector extension for storing task/project embeddings (future RAG features)
+All tables must have: id (UUID primary key), created_at, updated_at timestamps
+Use JSONB columns for flexible metadata storage (team skills, task acceptance criteria)
+Implement row-level security (RLS) policies for multi-tenant data isolation
+Index all foreign keys and frequently queried columns
+Maximum query execution time: 500ms (log slow queries for optimization)
+ORM and Query Builder: Prisma
+Technology: Prisma v5+ ORM
+Technical Rules:
+Define all schema models in schema.prisma
+Use Prisma Client for all database operations (no raw SQL except complex analytics)
+Enable query logging in development for debugging
+Implement soft deletes using deleted_at timestamp (preserve data for analytics)
+Use Prisma migrations for all schema changes: prisma migrate dev, prisma migrate deploy
+Never modify database schema manually in production
+Implement database connection pooling: max 10 connections per service instance
+Caching Layer: Redis
+Technology: Redis v7+ (Upstash for serverless deployment)
+Use Cases:
+Session storage for authentication
+API response caching (short-lived)
+Rate limiting counters
+BullMQ job queue backing
+Real-time collaboration presence data
+Technical Rules:
+Use Redis for ephemeral data only (data that can be regenerated)
+Set TTL (time-to-live) on all cached keys: 5-60 minutes depending on data type
+Cache key naming convention: namespace:entity:id:field (e.g., cache:project:123:epics)
+Implement cache invalidation on data mutations
+Maximum cached object size: 1MB
+Use Redis Streams for real-time event broadcasting
+AI and Machine Learning Integration
+AI Framework: LangChain with LangGraph
+Technologies:
+LangChain v0.3+ for LLM orchestration
+LangGraph for complex multi-step workflows
+LangSmith for observability and debugging
+Justification: LangChain provides the most comprehensive ecosystem for building production AI agents with extensive integrations and robust tooling[3][6].
+Technical Rules:
+Use LangChain for all LLM interactions (no direct API calls to model providers)
+Implement LangGraph for multi-step workflows: epic generation → task breakdown → assignment
+Store all prompts in database with versioning (not hardcoded)
+Use LangSmith in production for tracing, debugging, and performance monitoring
+Implement prompt templates with variable injection for dynamic context
+Track token usage and costs per API call (store in database)
+Set token limits: 4000 input tokens, 2000 output tokens per API call
+LLM Provider Strategy: Multi-Provider with Vercel AI SDK
+Primary Provider: OpenAI GPT-4 Turbo (reasoning and planning)
+Alternative Providers:
+Anthropic Claude 3.5 Sonnet (complex analysis)
+Google Gemini 2.0 Pro (cost-effective operations)
+Technical Rules:
+Use Vercel AI SDK for unified multi-provider interface
+Implement provider fallback: OpenAI → Claude → Gemini
+Configure model selection based on task complexity:
+Epic generation: GPT-4 Turbo or Claude 3.5 Sonnet
+Task breakdown: GPT-4 Turbo
+Task assignment (reasoning): GPT-4 Turbo
+Simple text operations: Gemini 2.0 Pro
+Store provider costs in database for billing and analytics
+Implement circuit breaker pattern for provider failures
+Maximum retry attempts per provider: 2
+Set temperature based on task: 0.3 (deterministic reasoning), 0.7 (creative generation)
+Embeddings and Vector Search
+Technology: pgvector (PostgreSQL extension) for MVP
+Future Consideration: Pinecone or Weaviate for scale (1M+ vectors)
+Technical Rules:
+Use OpenAI text-embedding-3-small model (1536 dimensions, cost-effective)
+Store embeddings in PostgreSQL vector column type
+Create HNSW index on embedding columns for fast similarity search
+Use cases: similar project lookup, task recommendation, smart search
+Regenerate embeddings on significant content updates
+Maximum vector dimension: 1536
+Authentication and Authorization
+Authentication Provider: Clerk
+Technology: Clerk v5+ for authentication and user management
+Justification: Clerk provides production-ready authentication with minimal setup, including email/password, OAuth, multi-factor authentication, and organization management[1].
+Technical Rules:
+Use Clerk for all authentication flows
+Supported methods: Email/password, Google OAuth, GitHub OAuth
+Implement multi-factor authentication (MFA) as optional for users
+Session duration: 7 days with automatic refresh
+Store minimal user data in Clerk, sync core data to PostgreSQL
+Use Clerk webhooks to sync user events (signup, deletion) to database
+Implement Clerk middleware for route protection in Next.js
+Authorization Model: Role-Based Access Control (RBAC)
+Roles:
+admin: Full system access, user management
+manager: Create projects, assign tasks, view all team data
+member: View assigned tasks, update task status, view project details
+viewer: Read-only access to projects and tasks
+Technical Rules:
+Implement RBAC checks at API route level (not just UI)
+Store user roles in PostgreSQL users table
+Use middleware to validate permissions before processing requests
+Implement row-level security (RLS) in PostgreSQL for data isolation
+Default role for new users: member
+Role assignment requires admin or manager permission
+Deployment and Infrastructure
+Hosting Strategy: Hybrid Cloud Deployment
+Frontend Hosting: Vercel (Next.js optimized)
+Backend Services: Railway or Render (Node.js, workers, databases)
+CDN: Cloudflare for static assets and DDoS protection
+Justification: This hybrid approach optimizes for Next.js performance on Vercel while maintaining cost-effective backend hosting[1][4].
+Technical Rules:
+Deploy Next.js frontend to Vercel production environment
+Deploy backend APIs and workers to Railway (primary) or Render (alternative)
+Use environment-specific configurations: development, staging, production
+Implement blue-green deployment strategy for zero-downtime updates
+Automated deployments on main branch merge
+Require code review approval before production deployment
+Containerization: Docker
+Technical Rules:
+Use Docker for local development environment setup
+Create multi-stage Dockerfiles for optimized image sizes
+Base images: node:20-alpine for Node.js services
+Include health check endpoints in all containerized services
+Tag images with semantic versioning and git commit SHA
+Maximum image size: 500MB
+Use docker-compose.yml for local development stack
+CI/CD Pipeline: GitHub Actions
+Technical Rules:
+Use GitHub Actions for all CI/CD workflows
+Workflow stages: Lint → Test → Build → Deploy
+Run on: Pull request creation, main branch push
+Required checks before merge: TypeScript compilation, ESLint, unit tests, integration tests
+Automated database migrations on deployment
+Deploy to staging on develop branch push
+Deploy to production on main branch push (requires manual approval)
+Rollback strategy: Revert deployment via Vercel dashboard or Railway CLI
+Monitoring and Observability
+Error Tracking: Sentry
+Technology: Sentry v7+ for error monitoring and performance tracking
+Technical Rules:
+Integrate Sentry in both frontend (Next.js) and backend (Node.js)
+Capture errors, exceptions, and unhandled promise rejections
+Set sample rate: 100% errors, 10% transactions (performance)
+Tag errors with: user ID, organization ID, environment, release version
+Configure alerts for critical errors: email notification within 5 minutes
+Review Sentry dashboard weekly for error trends
+Application Performance Monitoring (APM)
+Tools:
+Vercel Analytics for frontend performance
+LangSmith for AI operation tracing
+Custom metrics via PostgreSQL logging
+Technical Rules:
+Track Core Web Vitals: LCP (< 2.5s), FID (< 100ms), CLS (< 0.1)
+Monitor API response times: p50, p95, p99 percentiles
+Log all AI API calls with: model, tokens used, cost, latency, success/failure
+Set up alerts for: API latency > 5s, error rate > 5%, failed jobs > 10%
+Generate weekly performance reports
+Logging Strategy
+Technical Rules:
+Use structured logging (JSON format) for all services
+Log levels: error, warn, info, debug
+Production log level: info (exclude debug)
+Include in every log: timestamp, service name, request ID, user ID (if authenticated)
+Log retention: 30 days in production, 7 days in staging
+Never log sensitive data: passwords, API keys, full credit card numbers
+Centralized logging: Store in Railway/Render native logging or CloudWatch
+Security Standards
+API Security
+Technical Rules:
+Enforce HTTPS in production (redirect HTTP to HTTPS)
+Implement rate limiting: 100 requests/minute per user, 1000/hour per IP
+Validate all input with Zod schemas before processing
+Sanitize user input to prevent XSS and SQL injection
+Use prepared statements (Prisma prevents SQL injection by default)
+Implement CORS with explicit allowed origins (no *)
+Set security headers: X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security
+API keys must be stored in environment variables, never in code
+Data Privacy and Compliance
+Standards: GDPR-ready architecture (for future EU expansion)
+Technical Rules:
+Encrypt sensitive data at rest (PostgreSQL transparent data encryption)
+Encrypt data in transit (TLS 1.3)
+Implement data anonymization for analytics and logs
+Provide user data export functionality (GDPR right to access)
+Implement user account deletion with data cascade (GDPR right to erasure)
+Store user consent preferences in database
+Regular security audits: quarterly for critical systems
+Secret Management
+Technical Rules:
+Store all secrets in environment variables
+Use Vercel environment variables for frontend secrets
+Use Railway/Render environment variables for backend secrets
+Never commit .env files to version control (add to .gitignore)
+Rotate API keys quarterly
+Use different credentials for development, staging, production
+Document all required environment variables in .env.example
+Development Standards
+Code Quality and Linting
+Tools:
+ESLint v9+ with TypeScript rules
+Prettier v3+ for code formatting
+Husky for Git hooks
+lint-staged for pre-commit checks
+Technical Rules:
+Run ESLint with --max-warnings 0 (zero warnings allowed)
+Use Prettier for consistent code formatting across team
+Configure pre-commit hook to run: prettier --write, eslint --fix, tsc --noEmit
+Follow Airbnb TypeScript style guide as base
+Maximum function length: 50 lines
+Maximum file length: 300 lines
+Enforce import order: React → external packages → internal modules → types → styles
+Testing Strategy
+Frameworks:
+Vitest for unit and integration tests
+Playwright for end-to-end (E2E) tests
+React Testing Library for component tests
+Technical Rules:
+Minimum test coverage: 70% for backend, 60% for frontend
+Write unit tests for: business logic, utility functions, API routes
+Write integration tests for: AI workflows, database operations, authentication flows
+Write E2E tests for: critical user journeys (project creation, task assignment)
+Run tests on: local development, CI pipeline (all PRs)
+Tests must pass before merging to main
+Mock external API calls in tests (OpenAI, Clerk)
+Test naming convention: describe('feature') > it('should do X when Y')
+Version Control and Git Workflow
+Strategy: Git Flow with feature branches
+Technical Rules:
+Main branches: main (production), develop (staging)
+Feature branches: feature/TASK-123-description
+Bugfix branches: bugfix/TASK-456-description
+Commit message format: type(scope): message (e.g., feat(tasks): add assignment logic)
+Commit types: feat, fix, refactor, test, docs, chore
+Require pull request reviews: minimum 1 approval
+Squash commits on merge to maintain clean history
+Delete feature branches after merge
+Data Models and Schema Design
+Core Entities
+Projects Table:
+Epics Table:
+Tasks Table:
+Team Members Table:
+Data Integrity Rules
+Performance Requirements
+Response Time Targets
+
+Table 1: Performance targets by operation type
+Scalability Targets
+MVP Phase (Months 1-6):
+Growth Phase (Months 7-12):
+Technical Rules:
+Cost Management and Optimization
+AI Cost Control
+Technical Rules:
+Infrastructure Cost Optimization
+Technical Rules:
+Technology Decision Matrix
+
+Table 2: Primary and alternative technology choices
+Implementation Phases
+Phase 1: MVP Core (Weeks 1-4)
+Focus: Basic project input, epic generation, task assignment
+Technologies to Implement:
+Phase 2: Enhanced AI (Weeks 5-6)
+Focus: Multi-step AI workflows, explainable assignments
+Technologies to Implement:
+Phase 3: Collaboration and Export (Weeks 7-8)
+Focus: Real-time updates, export to Jira/Trello
+Technologies to Implement:
+Phase 4: Production Hardening (Weeks 9-10)
+Focus: Monitoring, testing, security
+Technologies to Implement:
+References
+[1] InfinitySky AI. (2026, February 20). What Tech Stack Do You Actually Need to Build an AI SaaS in 2026? https://infinitysky.ai/blog/ai-saas-tech-stack-guide-2026
+[2] AlphaMatch AI. (2025, December 23). Top 7 Agentic AI Frameworks in 2026: LangChain, CrewAI, and More. https://www.alphamatch.ai/blog/top-agentic-ai-frameworks-2026
+[3] Arsum. (2026, February 4). AI Agent Frameworks Compared (2026): LangChain, CrewAI, AutoGen, MetaGPT. https://arsum.com/blog/posts/ai-agent-frameworks/
+[4] Algosoft Apps. (2026, January 15). Best Tech Stack for SaaS Application Development. https://www.algosoft.co/blogs/best-tech-stack-for-saas-application-development/
+[5] Enqcode. (2025, November 4). Best Tech Stack for Building Scalable SaaS Apps in 2026. https://enqcode.com/blog/best-tech-stack-for-building-scalable-saas-apps-in-2026
+[6] Digital Applied. (2026, January 3). MCP vs LangChain vs CrewAI: Agent Framework Comparison 2026. https://www.digitalapplied.com/blog/mcp-vs-langchain-vs-crewai-agent-framework-comparison

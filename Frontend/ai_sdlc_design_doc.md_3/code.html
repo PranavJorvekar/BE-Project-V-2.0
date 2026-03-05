@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Review &amp; Generate Plan - AI SDLC Analyst</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary-600: #4F46E5;
+            --primary-500: #6366F1;
+            --primary-700: #3730A3;
+            --primary-50: #EEF2FF;
+            --gray-900: #111827;
+            --gray-800: #1F2937;
+            --gray-700: #374151;
+            --gray-500: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-50: #F9FAFB;
+            --success-600: #059669;
+            --success-50: #ECFDF5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+        }
+        .stepper-line {
+            height: 2px;
+            background-color: var(--primary-600);
+            flex-grow: 1;
+            margin: 0 16px;
+        }
+        .summary-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
+        }
+        .summary-card:hover {
+            border-color: var(--primary-300);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .confidence-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: var(--gray-200);
+            overflow: hidden;
+        }
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary-500), var(--success-600));
+            width: 92%;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24">
+<header class="bg-white border-b border-gray-200 py-6 sticky top-0 z-10">
+<div class="max-w-4xl mx-auto px-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[var(--success-600)] text-white flex items-center justify-center font-semibold text-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<span class="font-semibold text-sm text-[var(--gray-900)]">Product Details</span>
+</div>
+<div class="stepper-line"></div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[var(--success-600)] text-white flex items-center justify-center font-semibold text-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<span class="font-semibold text-sm text-[var(--gray-900)]">Team</span>
+</div>
+<div class="stepper-line"></div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[var(--primary-600)] text-white flex items-center justify-center font-semibold text-sm ring-4 ring-[var(--primary-50)]">3</div>
+<span class="font-bold text-sm text-[var(--primary-600)]">Review</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow py-12 px-6">
+<div class="max-w-5xl mx-auto">
+<div class="mb-10 text-center">
+<h1 class="text-3xl font-bold text-[var(--gray-900)]">Final Review</h1>
+<p class="text-[var(--gray-700)] mt-2">Verify your configuration before the AI generates your development roadmap.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+<div class="summary-card">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-sm font-bold text-[var(--gray-500)] uppercase tracking-wider">Product Details</h3>
+<button class="text-[var(--primary-600)] hover:underline text-xs font-semibold">Edit</button>
+</div>
+<div class="space-y-4">
+<div>
+<p class="text-lg font-bold text-[var(--gray-900)]">Sales Tracking Dashboard</p>
+<p class="text-sm text-[var(--gray-600)] mt-1 line-clamp-2 italic">"A centralized platform for real-time sales monitoring and team performance analytics..."</p>
+</div>
+<div class="flex flex-wrap gap-2 pt-2">
+<span class="px-2.5 py-1 rounded-md bg-[var(--primary-50)] text-[var(--primary-600)] text-xs font-medium border border-[var(--primary-200)]">React</span>
+<span class="px-2.5 py-1 rounded-md bg-[var(--primary-50)] text-[var(--primary-600)] text-xs font-medium border border-[var(--primary-200)]">Node.js</span>
+<span class="px-2.5 py-1 rounded-md bg-[var(--primary-50)] text-[var(--primary-600)] text-xs font-medium border border-[var(--primary-200)]">PostgreSQL</span>
+<span class="px-2.5 py-1 rounded-md bg-[var(--primary-50)] text-[var(--primary-600)] text-xs font-medium border border-[var(--primary-200)]">AWS</span>
+</div>
+</div>
+</div>
+<div class="summary-card">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-sm font-bold text-[var(--gray-500)] uppercase tracking-wider">Team Overview</h3>
+<button class="text-[var(--primary-600)] hover:underline text-xs font-semibold">Edit</button>
+</div>
+<div class="space-y-4">
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-[var(--gray-50)] p-3 rounded-lg border border-[var(--gray-200)]">
+<p class="text-xs text-[var(--gray-500)] font-medium">Core Roles</p>
+<p class="text-xl font-bold text-[var(--gray-900)] mt-1">5 Members</p>
+</div>
+<div class="bg-[var(--gray-50)] p-3 rounded-lg border border-[var(--gray-200)]">
+<p class="text-xs text-[var(--gray-500)] font-medium">Total Capacity</p>
+<p class="text-xl font-bold text-[var(--gray-900)] mt-1">180h <span class="text-xs text-[var(--gray-500)] font-normal">/wk</span></p>
+</div>
+</div>
+<div class="text-xs space-y-2">
+<div class="flex justify-between items-center text-[var(--gray-700)]">
+<span>2x Frontend Engineers</span>
+<span class="font-semibold">80h</span>
+</div>
+<div class="flex justify-between items-center text-[var(--gray-700)]">
+<span>1x Backend Engineer</span>
+<span class="font-semibold">40h</span>
+</div>
+<div class="flex justify-between items-center text-[var(--gray-700)]">
+<span>1x Product Designer</span>
+<span class="font-semibold">30h</span>
+</div>
+<div class="flex justify-between items-center text-[var(--gray-700)]">
+<span>1x Project Manager</span>
+<span class="font-semibold">30h</span>
+</div>
+</div>
+</div>
+</div>
+<div class="summary-card">
+<div class="flex justify-between items-start mb-4">
+<h3 class="text-sm font-bold text-[var(--gray-500)] uppercase tracking-wider">Priorities</h3>
+<button class="text-[var(--primary-600)] hover:underline text-xs font-semibold">Edit</button>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-2 text-sm text-[var(--gray-700)]">
+<span class="material-symbols-outlined text-[var(--success-600)] text-lg">check_circle</span>
+<span>Time-to-Market (Primary)</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-[var(--gray-700)]">
+<span class="material-symbols-outlined text-[var(--success-600)] text-lg">check_circle</span>
+<span>User Experience</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-[var(--gray-700)]">
+<span class="material-symbols-outlined text-[var(--success-600)] text-lg">check_circle</span>
+<span>Security &amp; Privacy</span>
+</div>
+<div class="mt-4 pt-4 border-t border-[var(--gray-100)]">
+<p class="text-xs font-bold text-[var(--gray-400)] mb-2 uppercase">Key Features</p>
+<p class="text-sm text-[var(--gray-700)]">• Real-time Data Sync</p>
+<p class="text-sm text-[var(--gray-700)] mt-1">• Multi-tenant Auth</p>
+<p class="text-sm text-[var(--gray-700)] mt-1">• Automated PDF Export</p>
+</div>
+</div>
+</div>
+<div class="summary-card border-[var(--primary-200)] bg-[var(--primary-50)]/30">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-2">
+<h3 class="text-sm font-bold text-[var(--primary-700)] uppercase tracking-wider">Project Estimate</h3>
+<span class="bg-[var(--primary-600)] text-white text-[10px] px-1.5 py-0.5 rounded font-bold uppercase">AI Calculated</span>
+</div>
+</div>
+<div class="space-y-6">
+<div class="flex items-end gap-1">
+<span class="text-4xl font-black text-[var(--primary-700)]">8</span>
+<span class="text-lg font-bold text-[var(--primary-600)] mb-1">Weeks</span>
+<span class="text-sm text-[var(--gray-500)] ml-auto mb-1 font-medium">Duration</span>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-sm font-semibold text-[var(--gray-700)]">AI Confidence</span>
+<span class="text-sm font-bold text-[var(--success-600)]">92%</span>
+</div>
+<div class="confidence-bar">
+<div class="confidence-fill"></div>
+</div>
+<p class="text-[11px] text-[var(--gray-500)] mt-2 italic">Based on team capacity, tech complexity, and MVP scope.</p>
+</div>
+<div class="grid grid-cols-2 gap-4 border-t border-[var(--primary-100)] pt-4">
+<div>
+<p class="text-[10px] text-[var(--gray-500)] uppercase font-bold">Risk Level</p>
+<p class="text-sm font-bold text-orange-600">Low-Medium</p>
+</div>
+<div>
+<p class="text-[10px] text-[var(--gray-500)] uppercase font-bold">Est. Launch</p>
+<p class="text-sm font-bold text-[var(--gray-900)]">Nov 24, 2023</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="text-center py-10 border-t border-[var(--gray-200)]">
+<h2 class="text-2xl font-bold text-[var(--gray-900)] mb-2">Ready to Generate Your Plan?</h2>
+<p class="text-[var(--gray-600)] mb-8 max-w-lg mx-auto">Our AI will process your requirements and generate a detailed sprint breakdown, architecture overview, and resource allocation map.</p>
+<button class="bg-[var(--primary-600)] hover:bg-[var(--primary-700)] text-white px-10 py-5 rounded-xl font-bold text-lg shadow-xl shadow-indigo-100 transition-all transform hover:-translate-y-1 active:scale-95 flex items-center gap-3 mx-auto">
+<span class="material-symbols-outlined text-2xl">colors_spark</span>
+                    Generate Development Plan
+                </button>
+<p class="text-[var(--gray-400)] text-xs mt-6 flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-sm">bolt</span>
+                    Usually takes about 30-45 seconds
+                </p>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-gray-200 py-4 px-6 fixed bottom-0 w-full z-10 shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
+<div class="max-w-5xl mx-auto flex items-center justify-between">
+<button class="text-[var(--gray-500)] font-semibold text-sm hover:text-[var(--gray-900)] flex items-center gap-2 px-4 py-2.5 rounded-md transition-all">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                Back to Team
+            </button>
+<div class="flex gap-3">
+<button class="text-[var(--primary-600)] font-medium text-sm hover:bg-[var(--primary-50)] px-6 py-2.5 rounded-md transition-all">
+                    Save as Template
+                </button>
+</div>
+</div>
+</footer>
+
+</body></html>

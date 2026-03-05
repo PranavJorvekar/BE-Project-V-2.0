@@ -1,0 +1,35 @@
+{
+  "name": "ai-sdlc-backend",
+  "version": "1.0.0",
+  "description": "AI SDLC Analyst Backend – Fastify + LangChain",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@langchain/core": "^0.1.30",
+    "@langchain/langgraph": "^0.0.12",
+    "@langchain/openai": "^0.0.14",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.26.1",
+    "openai": "^4.28.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,92 @@
+[
+    {
+        "id": "tmpl-001",
+        "name": "SaaS MVP",
+        "description": "A scalable foundation for subscription-based products, including multi-tenancy and billing integrations.",
+        "icon": "rocket_launch",
+        "iconColor": "text-primary-600",
+        "iconBg": "bg-primary-50",
+        "epics": [
+            "Auth & RBAC",
+            "Subscription",
+            "Dashboard"
+        ],
+        "timeline": "8-10 weeks",
+        "category": "SaaS"
+    },
+    {
+        "id": "tmpl-002",
+        "name": "E-commerce Platform",
+        "description": "Full-featured commerce engine with product management, inventory, and secure checkout flows.",
+        "icon": "shopping_cart",
+        "iconColor": "text-emerald-600",
+        "iconBg": "bg-emerald-50",
+        "epics": [
+            "Catalog",
+            "Payments",
+            "Orders"
+        ],
+        "timeline": "12-14 weeks",
+        "category": "E-commerce"
+    },
+    {
+        "id": "tmpl-003",
+        "name": "Consumer Mobile App",
+        "description": "Cross-platform mobile structure optimized for high engagement, push notifications, and social features.",
+        "icon": "smartphone",
+        "iconColor": "text-blue-600",
+        "iconBg": "bg-blue-50",
+        "epics": [
+            "Onboarding",
+            "User Profile",
+            "Notifications"
+        ],
+        "timeline": "6-8 weeks",
+        "category": "Mobile App"
+    },
+    {
+        "id": "tmpl-004",
+        "name": "Internal Admin Tool",
+        "description": "Back-office utility for data management, reporting dashboards, and user auditing.",
+        "icon": "admin_panel_settings",
+        "iconColor": "text-amber-600",
+        "iconBg": "bg-amber-50",
+        "epics": [
+            "CRUD Ops",
+            "Log Viewer",
+            "Reports"
+        ],
+        "timeline": "4-5 weeks",
+        "category": "Enterprise"
+    },
+    {
+        "id": "tmpl-005",
+        "name": "Fintech Digital Wallet",
+        "description": "Secure financial application blueprint with transaction ledger, KYB/KYC, and bank linking.",
+        "icon": "account_balance_wallet",
+        "iconColor": "text-purple-600",
+        "iconBg": "bg-purple-50",
+        "epics": [
+            "KYC Flow",
+            "Ledger",
+            "Security"
+        ],
+        "timeline": "16-20 weeks",
+        "category": "Fintech"
+    },
+    {
+        "id": "tmpl-006",
+        "name": "AI Agent Workspace",
+        "description": "Specialized structure for building LLM-driven applications with prompt management and vector search.",
+        "icon": "psychology",
+        "iconColor": "text-slate-600",
+        "iconBg": "bg-slate-50",
+        "epics": [
+            "LLM Gateway",
+            "RAG Pipeline",
+            "Chat UI"
+        ],
+        "timeline": "7-9 weeks",
+        "category": "SaaS"
+    }
+]

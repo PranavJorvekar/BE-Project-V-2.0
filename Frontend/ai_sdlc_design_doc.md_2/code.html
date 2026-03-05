@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Setup Wizard - Team Composition - AI SDLC Analyst</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary-600: #4F46E5;
+            --primary-500: #6366F1;
+            --primary-700: #3730A3;
+            --primary-50: #EEF2FF;
+            --gray-900: #111827;
+            --gray-700: #374151;
+            --gray-600: #4B5563;
+            --gray-500: #6B7280;
+            --gray-400: #9CA3AF;
+            --gray-300: #D1D5DB;
+            --gray-200: #E5E7EB;
+            --gray-50: #F9FAFB;
+            --amber-50: #FFFBEB;
+            --amber-100: #FEF3C7;
+            --amber-700: #B45309;
+            --green-600: #059669;
+            --green-50: #ECFDF5;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-900);
+        }
+        .stepper-line {
+            height: 2px;
+            background-color: var(--gray-200);
+            flex-grow: 1;
+            margin: 0 16px;
+        }
+        .stepper-line.active {
+            background-color: var(--primary-600);
+        }
+        .form-card {
+            background: white;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .input-focus:focus {
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+            background: var(--primary-600);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 2px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24">
+<header class="bg-white border-b border-gray-200 py-6 sticky top-0 z-10">
+<div class="max-w-4xl mx-auto px-6">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-semibold text-sm">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<span class="font-medium text-sm text-[var(--gray-600)]">Product Details</span>
+</div>
+<div class="stepper-line active"></div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[var(--primary-600)] text-white flex items-center justify-center font-semibold text-sm">2</div>
+<span class="font-semibold text-sm text-[var(--gray-900)]">Team</span>
+</div>
+<div class="stepper-line"></div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-[var(--gray-200)] text-[var(--gray-500)] flex items-center justify-center font-semibold text-sm">3</div>
+<span class="font-medium text-sm text-[var(--gray-500)]">Review</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow py-12 px-6">
+<div class="max-w-[800px] mx-auto space-y-8">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-bold text-[var(--gray-900)]">Team Composition</h1>
+<p class="text-[var(--gray-700)] mt-2">Define your project team and their availability.</p>
+</div>
+<div class="bg-[var(--green-50)] border border-green-200 px-4 py-3 rounded-lg text-right">
+<p class="text-[10px] uppercase tracking-wider font-bold text-green-700 mb-1">Available Capacity</p>
+<p class="text-2xl font-bold text-green-800">16 hrs/week</p>
+</div>
+</div>
+<div class="space-y-6">
+<div class="form-card relative border-l-4 border-l-[var(--primary-600)]">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-bold text-lg text-[var(--gray-900)] flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400">person</span>
+                        Team Member #1
+                    </h3>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Name</label>
+<input class="w-full px-3 py-2 border border-[var(--gray-300)] rounded-md input-focus text-sm" placeholder="e.g., Alex Rivera" type="text" value="Alex Rivera"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Role</label>
+<select class="w-full px-3 py-2 border border-[var(--gray-300)] rounded-md input-focus text-sm bg-white">
+<option>Backend Developer</option>
+<option>Frontend Developer</option>
+<option>Full Stack Developer</option>
+<option>UI/UX Designer</option>
+<option>Product Manager</option>
+<option>QA Engineer</option>
+</select>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Skills</label>
+<div class="border border-[var(--gray-300)] rounded-md px-3 py-2 flex flex-wrap gap-2 items-center input-focus min-h-[42px]">
+<span class="bg-[var(--primary-50)] text-[var(--primary-600)] px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            Python <button class="material-symbols-outlined text-[14px]">close</button>
+</span>
+<span class="bg-[var(--primary-50)] text-[var(--primary-600)] px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            PostgreSQL <button class="material-symbols-outlined text-[14px]">close</button>
+</span>
+<input class="border-none p-0 focus:ring-0 text-sm flex-grow min-w-[120px]" placeholder="Add skills..." type="text"/>
+</div>
+</div>
+<div class="mb-8">
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-3">Experience Level</label>
+<div class="flex gap-6">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp1" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Junior</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp1" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Mid</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp1" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Senior</span>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<div class="flex justify-between items-center mb-4">
+<label class="text-sm font-semibold text-[var(--gray-900)]">Weekly Capacity</label>
+<span class="text-sm font-bold text-[var(--primary-600)]">40 hrs</span>
+</div>
+<input class="w-full h-1.5 bg-[var(--gray-200)] rounded-lg appearance-none cursor-pointer accent-[var(--primary-600)]" max="60" min="0" step="1" type="range" value="40"/>
+<div class="flex justify-between mt-2 text-[10px] text-[var(--gray-500)] font-medium">
+<span>0 HRS</span>
+<span>60 HRS</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-4">
+<label class="text-sm font-semibold text-[var(--gray-900)]">Current Workload</label>
+<span class="text-sm font-bold text-[var(--primary-600)]">60%</span>
+</div>
+<input class="w-full h-1.5 bg-[var(--gray-200)] rounded-lg appearance-none cursor-pointer accent-[var(--primary-600)]" max="100" min="0" step="5" type="range" value="60"/>
+<div class="flex justify-between mt-2 text-[10px] text-[var(--gray-500)] font-medium">
+<span>0%</span>
+<span>100%</span>
+</div>
+</div>
+</div>
+</div>
+<div class="form-card relative border-l-4 border-l-[var(--gray-200)]">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-bold text-lg text-[var(--gray-900)] flex items-center gap-2">
+<span class="material-symbols-outlined text-gray-400">person</span>
+                        Team Member #2
+                    </h3>
+<button class="text-gray-400 hover:text-red-500 transition-colors">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-6 mb-6">
+<div>
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Name</label>
+<input class="w-full px-3 py-2 border border-[var(--gray-300)] rounded-md input-focus text-sm" placeholder="e.g., Jordan Lee" type="text" value="Jordan Lee"/>
+</div>
+<div>
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Role</label>
+<select class="w-full px-3 py-2 border border-[var(--gray-300)] rounded-md input-focus text-sm bg-white">
+<option>Frontend Developer</option>
+<option>Backend Developer</option>
+<option>UI/UX Designer</option>
+<option>Product Manager</option>
+</select>
+</div>
+</div>
+<div class="mb-6">
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-2">Skills</label>
+<div class="border border-[var(--gray-300)] rounded-md px-3 py-2 flex flex-wrap gap-2 items-center input-focus min-h-[42px]">
+<span class="bg-[var(--primary-50)] text-[var(--primary-600)] px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            React <button class="material-symbols-outlined text-[14px]">close</button>
+</span>
+<span class="bg-[var(--primary-50)] text-[var(--primary-600)] px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+                            Tailwind CSS <button class="material-symbols-outlined text-[14px]">close</button>
+</span>
+<input class="border-none p-0 focus:ring-0 text-sm flex-grow min-w-[120px]" placeholder="Add skills..." type="text"/>
+</div>
+</div>
+<div class="mb-8">
+<label class="block text-sm font-semibold text-[var(--gray-900)] mb-3">Experience Level</label>
+<div class="flex gap-6">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp2" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Junior</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp2" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Mid</span>
+</label>
+<label class="flex items-center gap-2 cursor-pointer group">
+<input checked="" class="w-4 h-4 text-[var(--primary-600)] focus:ring-[var(--primary-500)] border-[var(--gray-300)]" name="exp2" type="radio"/>
+<span class="text-sm text-[var(--gray-700)] group-hover:text-[var(--gray-900)]">Senior</span>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div>
+<div class="flex justify-between items-center mb-4">
+<label class="text-sm font-semibold text-[var(--gray-900)]">Weekly Capacity</label>
+<span class="text-sm font-bold text-[var(--primary-600)]">20 hrs</span>
+</div>
+<input class="w-full h-1.5 bg-[var(--gray-200)] rounded-lg appearance-none cursor-pointer accent-[var(--primary-600)]" max="60" min="0" step="1" type="range" value="20"/>
+<div class="flex justify-between mt-2 text-[10px] text-[var(--gray-500)] font-medium">
+<span>0 HRS</span>
+<span>60 HRS</span>
+</div>
+</div>
+<div>
+<div class="flex justify-between items-center mb-4">
+<label class="text-sm font-semibold text-[var(--gray-900)]">Current Workload</label>
+<span class="text-sm font-bold text-[var(--primary-600)]">100%</span>
+</div>
+<input class="w-full h-1.5 bg-[var(--gray-200)] rounded-lg appearance-none cursor-pointer accent-[var(--primary-600)]" max="100" min="0" step="5" type="range" value="100"/>
+<div class="flex justify-between mt-2 text-[10px] text-[var(--gray-500)] font-medium">
+<span>0%</span>
+<span>100%</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full border-2 border-dashed border-[var(--gray-300)] py-4 rounded-lg flex items-center justify-center gap-2 text-[var(--gray-600)] font-medium hover:border-[var(--primary-600)] hover:text-[var(--primary-600)] transition-all bg-white/50">
+<span class="material-symbols-outlined">add_circle</span>
+                Add Team Member
+            </button>
+<div class="bg-[var(--amber-50)] border border-[var(--amber-100)] p-4 rounded-lg flex items-start gap-3">
+<span class="material-symbols-outlined text-[var(--amber-700)]">warning</span>
+<p class="text-sm text-[var(--amber-700)] font-medium">
+                    Your team's total capacity may be insufficient for your 8-week timeline. Consider increasing capacity or extending the project duration.
+                </p>
+</div>
+</div>
+</div>
+</main>
+<footer class="bg-white border-t border-gray-200 py-4 px-6 fixed bottom-0 w-full z-10 shadow-[0_-1px_10px_rgba(0,0,0,0.05)]">
+<div class="max-w-4xl mx-auto flex items-center justify-between">
+<button class="flex items-center gap-2 text-[var(--gray-600)] font-medium text-sm hover:bg-[var(--gray-50)] px-4 py-2.5 rounded-md transition-all">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Back
+        </button>
+<div class="flex gap-3">
+<button class="text-[var(--primary-600)] font-medium text-sm hover:bg-[var(--primary-50)] px-6 py-2.5 rounded-md transition-all">
+                Save Draft
+            </button>
+<button class="bg-[var(--primary-600)] hover:bg-[var(--primary-500)] active:bg-[var(--primary-700)] text-white px-10 py-2.5 rounded-md font-medium text-sm transition-all shadow-sm flex items-center gap-2">
+                Next
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</footer>
+
+</body></html>
