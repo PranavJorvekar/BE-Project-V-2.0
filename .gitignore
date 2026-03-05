@@ -1,0 +1,21 @@
+# Node
+node_modules/
+dist/
+build/
+.next/
+*.log
+
+# Prisma
+# Note: Keep the schema file, but ignore the generated client
+.env
+dev.db
+dev.db-journal
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
