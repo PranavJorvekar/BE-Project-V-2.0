@@ -13,9 +13,10 @@
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
-    "@langchain/core": "^0.1.30",
-    "@langchain/langgraph": "^0.0.12",
-    "@langchain/openai": "^0.0.14",
+    "@langchain/core": "^1.1.30",
+    "@langchain/google-genai": "^2.1.24",
+    "@langchain/langgraph": "^1.2.0",
+    "@langchain/openai": "^1.2.12",
     "@prisma/client": "^5.22.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.1",

@@ -19,6 +19,7 @@ export default function AppNav() {
 
                 {/* Nav Links */}
                 <div className="flex items-center gap-1">
+                    <NavLink href="/dashboard" label="Dashboard" icon="dashboard" active={pathname.startsWith("/dashboard")} />
                     <NavLink href="/projects" label="Projects" icon="folder_open" active={pathname.startsWith("/projects")} />
                     <NavLink href="/templates" label="Templates" icon="grid_view" active={pathname.startsWith("/templates")} />
                     <NavLink href="/employees" label="Employees" icon="group" active={pathname.startsWith("/employees")} />

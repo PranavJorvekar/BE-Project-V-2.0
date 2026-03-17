@@ -1,11 +1,11 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import * as dotenv from "dotenv";
 import { projectRoutes } from "./routes/projects";
 import { generateRoutes } from "./routes/generate";
 import { employeeRoutes } from "./routes/employees";
-
-dotenv.config();
 
 const server = Fastify({
     logger: true,

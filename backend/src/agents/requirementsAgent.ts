@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getLLM, AI_MODE } from "../lib/llm";
+import { getLLM, AI_MODE, withRetry } from "../lib/llm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 
@@ -52,7 +52,7 @@ async function realRequirements(input: {
     priorities: string[];
     timeline: number;
 }): Promise<Requirements> {
-    const llm = getLLM("gpt-4o-mini");
+    const llm = getLLM("openai/gpt-oss-120b");
     const prompt = ChatPromptTemplate.fromTemplate(`
 You are a senior software architect. Parse the following product details into a structured requirements JSON.
 
@@ -78,14 +78,14 @@ Respond ONLY with valid JSON matching this exact shape:
 `);
 
     const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
-    const result = await chain.invoke({
+    const result = await withRetry(() => chain.invoke({
         name: input.name,
         description: input.description,
         features: input.features.join(", "),
         techStack: input.techStack.join(", "),
         priorities: input.priorities.join(", "),
         timeline: String(input.timeline),
-    });
+    }));
 
     return RequirementsSchema.parse(result);
 }

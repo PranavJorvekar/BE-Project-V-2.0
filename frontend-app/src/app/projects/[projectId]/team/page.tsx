@@ -189,7 +189,7 @@ export default function TeamPage({ params }: { params: Promise<{ projectId: stri
                                     <div className="text-xs text-gray-400 mb-2 font-medium">Weekly Capacity (8 weeks)</div>
                                     <div className="flex items-end gap-1.5 h-16">
                                         {weeklyCapRows.slice(0, 8).map((cap: number, i: number) => (
-                                            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+                                            <div key={`capacity-${member.id}-${i}`} className="flex-1 flex flex-col items-center gap-1">
                                                 <div
                                                     className="w-full rounded-t-sm transition-all"
                                                     style={{
@@ -207,8 +207,8 @@ export default function TeamPage({ params }: { params: Promise<{ projectId: stri
                                 {/* Skills */}
                                 <div className="mt-4 pt-4 border-t border-gray-100">
                                     <div className="flex flex-wrap gap-1.5">
-                                        {(member.skills || []).map((s: string) => (
-                                            <Badge key={s} label={s} variant="gray" />
+                                        {(member.skills || []).map((s: string, i: number) => (
+                                            <Badge key={`skill-${member.id}-${s}-${i}`} label={s} variant="gray" />
                                         ))}
                                         {(!member.skills || member.skills.length === 0) && (
                                             <span className="text-sm text-gray-400">No skills defined.</span>

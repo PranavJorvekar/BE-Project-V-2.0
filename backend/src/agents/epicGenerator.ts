@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getLLM, AI_MODE } from "../lib/llm";
+import { getLLM, AI_MODE, withRetry } from "../lib/llm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { Requirements } from "./requirementsAgent";
@@ -126,7 +126,7 @@ function mockEpics(requirements: Requirements): GeneratedEpic[] {
 // ─── Real LLM ────────────────────────────────────────────────────────────────
 
 async function realEpics(requirements: Requirements): Promise<GeneratedEpic[]> {
-    const llm = getLLM("gpt-4o");
+    const llm = getLLM("openai/gpt-oss-120b");
     const prompt = ChatPromptTemplate.fromTemplate(`
 You are a senior engineering manager. Generate {epicCount} SDLC epics for the following product.
 Focus on startup MVP delivery. Each epic should represent a major phase.
@@ -155,7 +155,7 @@ Respond ONLY with valid JSON:
 `);
 
     const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
-    const result = await chain.invoke({
+    const result = await withRetry(() => chain.invoke({
         epicCount: String(requirements.suggestedEpicCount),
         productName: requirements.productName,
         coreObjective: requirements.coreObjective,
@@ -163,7 +163,7 @@ Respond ONLY with valid JSON:
         techStack: requirements.techStack.join(", "),
         timeline: String(requirements.timeline),
         complexity: requirements.complexityLevel,
-    });
+    }));
 
     return EpicsOutputSchema.parse(result).epics;
 }

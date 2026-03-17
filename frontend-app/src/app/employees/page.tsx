@@ -162,8 +162,8 @@ export default function EmployeesPage() {
                                     <div>
                                         <div className="text-[10px] text-gray-400 uppercase font-bold mb-1.5">Skills</div>
                                         <div className="flex flex-wrap gap-1.5">
-                                            {emp.skills.map((s: string) => (
-                                                <Badge key={s} label={s} variant="indigo" />
+                                            {emp.skills.map((s: string, idx: number) => (
+                                                <Badge key={`skill-${emp.id}-${s}-${idx}`} label={s} variant="indigo" />
                                             ))}
                                         </div>
                                     </div>

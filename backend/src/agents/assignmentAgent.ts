@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getLLM, AI_MODE } from "../lib/llm";
+import { getLLM, AI_MODE, withRetry } from "../lib/llm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { GeneratedTask } from "./taskBreaker";
@@ -109,66 +109,79 @@ async function realAssignment(
     tasks: GeneratedTask[],
     team: TeamMemberInput[]
 ): Promise<AssignedTask[]> {
-    const llm = getLLM("gpt-4o");
+    if (team.length === 0) return mockAssignment(tasks, team);
+
+    const llm = getLLM();
 
     const teamSummary = team
         .map(
             (m) =>
-                `- ${m.name} (${m.role}, ${m.experience}): ${m.skills.join(", ")}, ${m.weeklyHours}h/week`
+                `- id:${m.id} | ${m.name} (${m.role}, ${m.experience}): ${m.skills.join(", ")}, ${m.weeklyHours}h/week`
         )
         .join("\n");
 
-    const assigned: AssignedTask[] = [];
+    const taskList = tasks
+        .map((t, i) => `${i}: ${t.name} | skills: ${t.skills.join(", ")} | effort: ${t.effort}h | priority: ${t.priority}`)
+        .join("\n");
 
-    for (const task of tasks) {
-        const prompt = ChatPromptTemplate.fromTemplate(`
-You are an AI engineering manager. Assign this task to the best-fit team member.
+    // ── Single batch call: assign ALL tasks at once ───────────────────────────
+    const prompt = ChatPromptTemplate.fromTemplate(`
+You are an AI engineering manager. Assign each task below to the best-fit team member.
 
-Task: {taskName}
-Required Skills: {skills}
-Effort: {effort}h
-Priority: {priority}
-
-Team Members:
+Team:
 {team}
 
-Respond ONLY with valid JSON:
-{{
+Tasks (index: name | skills | effort | priority):
+{tasks}
+
+Respond ONLY with a valid JSON array, one entry per task in the SAME ORDER as the task list:
+[{{
+  "index": number,
   "assigneeId": string (id from team),
   "fitScore": number (0-100),
-  "aiReasoning": string (2-3 sentences explaining why this person was chosen),
-  "alternatives": [{{ "name": string, "role": string, "score": number }}]
-}}
+  "aiReasoning": string (1-2 sentences),
+  "alternatives": [{{"name": string, "role": string, "score": number}}]
+}}]
 `);
 
+    try {
         const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
-        const result = (await chain.invoke({
-            taskName: task.name,
-            skills: task.skills.join(", "),
-            effort: String(task.effort),
-            priority: task.priority,
+        const result = (await withRetry(() => chain.invoke({
             team: teamSummary,
-        })) as {
+            tasks: taskList,
+        }))) as Array<{
+            index: number;
             assigneeId: string;
             fitScore: number;
             aiReasoning: string;
             alternatives: Array<{ name: string; role: string; score: number }>;
-        };
+        }>;
 
-        const member = team.find((m) => m.id === result.assigneeId) || team[0];
-        assigned.push({
-            ...task,
-            assigneeId: member.id,
-            assigneeName: member.name,
-            assigneeInitials: member.initials,
-            assigneeRole: member.role,
-            fitScore: result.fitScore,
-            aiReasoning: result.aiReasoning,
-            alternatives: result.alternatives || [],
+        const assignments = Array.isArray(result) ? result : [];
+        console.log(`  ✓ Assignment: ${assignments.length}/${tasks.length} tasks assigned in one batch call`);
+
+        return tasks.map((task, i) => {
+            const assignment = assignments.find((a) => a.index === i);
+            const member = team.find((m) => m.id === assignment?.assigneeId) || team[0];
+
+            // local score as fallback if LLM didn't return one
+            const fitScore = assignment?.fitScore ?? computeFitScore(task, member);
+
+            return {
+                ...task,
+                assigneeId: member.id,
+                assigneeName: member.name,
+                assigneeInitials: member.initials,
+                assigneeRole: member.role,
+                fitScore,
+                aiReasoning: assignment?.aiReasoning ?? getReasoning(member, task, fitScore),
+                alternatives: assignment?.alternatives ?? [],
+            };
         });
+    } catch (err) {
+        console.warn("Batch assignment failed, falling back to local skill-match:", err);
+        return mockAssignment(tasks, team);
     }
-
-    return assigned;
 }
 
 // ─── Exported Agent ──────────────────────────────────────────────────────────

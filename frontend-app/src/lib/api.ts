@@ -83,6 +83,44 @@ export async function getGenerationStatus(projectId: string): Promise<Generation
     return res.json();
 }
 
+export interface PipelineProgressEvent {
+    step: number;
+    stepLabel: string;
+    done: boolean;
+    error?: string;
+    startedAt?: number;
+}
+
+/** Subscribe to real-time pipeline progress via SSE.
+ *  Returns a cleanup function — call it to close the connection. */
+export function subscribeToProgress(
+    projectId: string,
+    onUpdate: (progress: PipelineProgressEvent) => void,
+    onDone: () => void
+): () => void {
+    const source = new EventSource(`${API_BASE}/api/v1/projects/${projectId}/progress`);
+
+    source.onmessage = (event) => {
+        try {
+            const data: PipelineProgressEvent = JSON.parse(event.data);
+            onUpdate(data);
+            if (data.done) {
+                source.close();
+                onDone();
+            }
+        } catch {
+            // ignore malformed events
+        }
+    };
+
+    source.onerror = () => {
+        source.close();
+    };
+
+    return () => source.close();
+}
+
+
 export async function updateTask(taskId: string, updates: { teamMemberId: string | null }): Promise<any> {
     const res = await fetch(`${API_BASE}/api/v1/tasks/${taskId}`, {
         method: "PATCH",
@@ -117,6 +155,62 @@ export async function deleteEmployee(id: string): Promise<void> {
 export async function deleteProject(id: string): Promise<void> {
     const res = await fetch(`${API_BASE}/api/v1/projects/${id}`, { method: "DELETE" });
     if (!res.ok) throw new Error("Failed to delete project");
+}
+
+export interface DashboardStats {
+    totalProjects: number;
+    totalTasks: number;
+    totalEpics: number;
+    totalWarnings: number;
+    totalTeamMembers: number;
+    statusBreakdown: Record<string, number>;
+    recentProjects: ProjectSummary[];
+    allTeamMembers: { id: string; name: string; initials: string; projects: string[] }[];
+    warningProjects: { id: string; name: string; warningCount: number; status: string }[];
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
+    const projects = await getProjects();
+
+    const statusBreakdown: Record<string, number> = {};
+    let totalTasks = 0;
+    let totalEpics = 0;
+    let totalWarnings = 0;
+    const memberMap = new Map<string, { id: string; name: string; initials: string; projects: string[] }>();
+
+    for (const p of projects) {
+        statusBreakdown[p.status] = (statusBreakdown[p.status] || 0) + 1;
+        totalTasks += p.taskCount;
+        totalEpics += p.epicCount;
+        totalWarnings += p.warningCount;
+        for (const m of p.team) {
+            if (!memberMap.has(m.id)) {
+                memberMap.set(m.id, { ...m, projects: [p.name] });
+            } else {
+                memberMap.get(m.id)!.projects.push(p.name);
+            }
+        }
+    }
+
+    const recentProjects = [...projects]
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 5);
+
+    const warningProjects = projects
+        .filter(p => p.warningCount > 0)
+        .sort((a, b) => b.warningCount - a.warningCount);
+
+    return {
+        totalProjects: projects.length,
+        totalTasks,
+        totalEpics,
+        totalWarnings,
+        totalTeamMembers: memberMap.size,
+        statusBreakdown,
+        recentProjects,
+        allTeamMembers: Array.from(memberMap.values()),
+        warningProjects,
+    };
 }
 
 export async function updateEmployee(id: string, data: any): Promise<any> {

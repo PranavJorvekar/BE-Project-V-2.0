@@ -2,64 +2,91 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { generatePlan, getGenerationStatus } from "@/lib/api";
+import { generatePlan, getGenerationStatus, subscribeToProgress } from "@/lib/api";
 
-const steps = [
-    { id: 1, label: "Parsing product requirements", icon: "description" },
-    { id: 2, label: "Generating SDLC epics", icon: "layers" },
-    { id: 3, label: "Breaking epics into tasks", icon: "task_alt" },
-    { id: 4, label: "Assigning tasks to team", icon: "group" },
-    { id: 5, label: "Detecting risks & warnings", icon: "warning" },
+// The 5 real pipeline steps — labels must match what pipeline.ts emits
+const STEPS = [
+    { step: 1, label: "Parsing product requirements", icon: "description" },
+    { step: 2, label: "Generating SDLC epics", icon: "layers" },
+    { step: 3, label: "Breaking epics into tasks", icon: "task_alt" },
+    { step: 4, label: "Assigning tasks to team", icon: "group" },
+    { step: 5, label: "Detecting risks & warnings", icon: "warning" },
 ];
+
+// Format elapsed seconds as m:ss
+function formatElapsed(seconds: number): string {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
 
 function GeneratingContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const projectId = searchParams.get("projectId");
 
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(0); // 0 = not started, 1-5 = active, 6 = done
+    const [statusLabel, setStatusLabel] = useState("Starting AI pipeline…");
     const [error, setError] = useState<string | null>(null);
-    const [dotCount, setDotCount] = useState(0);
-    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const [elapsed, setElapsed] = useState(0);
+    const [done, setDone] = useState(false);
+
     const pollRef = useRef<NodeJS.Timeout | null>(null);
+    const cleanupSSE = useRef<(() => void) | null>(null);
     const triggered = useRef(false);
+    const startRef = useRef<number>(Date.now());
 
-    // Animate loading dots
+    // Elapsed timer
     useEffect(() => {
-        intervalRef.current = setInterval(() => setDotCount((d) => (d + 1) % 4), 500);
-        return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+        const timer = setInterval(() => {
+            setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
+        }, 1000);
+        return () => clearInterval(timer);
     }, []);
 
-    // Step animation while generating
-    useEffect(() => {
-        let step = 0;
-        const stepInterval = setInterval(() => {
-            step = Math.min(step + 1, steps.length - 1);
-            setCurrentStep(step);
-        }, 2200);
-        return () => clearInterval(stepInterval);
-    }, []);
-
-    // Trigger generation + poll status
+    // Trigger generation + subscribe to SSE progress + poll as fallback
     useEffect(() => {
         if (!projectId || triggered.current) return;
         triggered.current = true;
+        startRef.current = Date.now();
 
-        // Trigger the pipeline
+        // 1. Trigger the pipeline
         generatePlan(projectId).catch((err) => {
             console.error("Failed to trigger pipeline:", err);
         });
 
-        // Poll for completion
+        // 2. Subscribe to SSE for real-time progress
+        cleanupSSE.current = subscribeToProgress(
+            projectId,
+            (progress) => {
+                setCurrentStep(progress.step);
+                setStatusLabel(progress.stepLabel);
+                if (progress.error) {
+                    setError("Plan generation failed. Please try again.");
+                    setDone(true);
+                }
+                if (progress.done && !progress.error) {
+                    setDone(true);
+                }
+            },
+            () => {
+                // SSE said done — wait 600ms then navigate
+                setTimeout(() => router.push(`/projects/${projectId}`), 600);
+            }
+        );
+
+        // 3. Fallback polling in case SSE fails/isn't supported
         const poll = async () => {
             try {
                 const status = await getGenerationStatus(projectId);
-                if (status.status === "IN_PLANNING" || status.status === "IN_PROGRESS" || status.status === "COMPLETED") {
-                    // Done! Navigate to the project dashboard
+                if (
+                    status.status === "IN_PLANNING" ||
+                    status.status === "IN_PROGRESS" ||
+                    status.status === "COMPLETED"
+                ) {
                     if (pollRef.current) clearInterval(pollRef.current);
                     router.push(`/projects/${projectId}`);
-                } else if (status.status === "DRAFT") {
-                    // Pipeline may have failed
+                } else if (status.status === "DRAFT" && done) {
                     setError("Plan generation failed. Please try again.");
                     if (pollRef.current) clearInterval(pollRef.current);
                 }
@@ -67,97 +94,199 @@ function GeneratingContent() {
                 // keep polling
             }
         };
+        pollRef.current = setInterval(poll, 3000);
 
-        pollRef.current = setInterval(poll, 2000);
-        return () => { if (pollRef.current) clearInterval(pollRef.current); };
-    }, [projectId, router]);
+        return () => {
+            if (pollRef.current) clearInterval(pollRef.current);
+            if (cleanupSSE.current) cleanupSSE.current();
+        };
+    }, [projectId, router, done]);
 
-    const progress = Math.round((currentStep / (steps.length - 1)) * 100);
+    // Progress bar: 0-100 based on step
+    const progress = currentStep === 0
+        ? 5
+        : currentStep >= 6
+            ? 100
+            : Math.round((currentStep / STEPS.length) * 95) + 5;
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden"
-            style={{ background: "linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4c1d95 100%)" }}>
-
-            {/* Background circles */}
+        <div
+            className="min-h-screen flex items-center justify-center relative overflow-hidden"
+            style={{ background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)" }}
+        >
+            {/* Animated background orbs */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                {[...Array(3)].map((_, i) => (
-                    <div key={i} className="absolute rounded-full opacity-10"
+                {[...Array(4)].map((_, i) => (
+                    <div
+                        key={i}
+                        className="absolute rounded-full"
                         style={{
-                            width: `${300 + i * 150}px`, height: `${300 + i * 150}px`,
-                            background: "radial-gradient(circle, #6366F1, transparent)",
-                            top: `${10 + i * 20}%`, left: `${10 + i * 25}%`,
-                            animation: `pulse ${3 + i}s ease-in-out infinite alternate`,
+                            width: `${250 + i * 120}px`,
+                            height: `${250 + i * 120}px`,
+                            background: `radial-gradient(circle, ${["#6366F1", "#8B5CF6", "#A855F7", "#EC4899"][i]}, transparent)`,
+                            top: `${5 + i * 22}%`,
+                            left: `${5 + i * 22}%`,
+                            opacity: 0.08,
+                            animation: `orb-pulse ${4 + i * 1.5}s ease-in-out infinite alternate`,
                         }}
                     />
                 ))}
             </div>
 
             <div className="relative z-10 w-full max-w-lg mx-auto px-6 text-center">
-                {/* AI Brain Icon */}
-                <div className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
-                    style={{ background: "rgba(255,255,255,0.1)", backdropFilter: "blur(20px)" }}>
-                    <span className="material-symbols-outlined text-white text-4xl"
-                        style={{ animation: "pulse 2s ease-in-out infinite" }}>smart_toy</span>
+
+                {/* AI Icon */}
+                <div
+                    className="w-20 h-20 rounded-2xl mx-auto mb-6 flex items-center justify-center"
+                    style={{
+                        background: "rgba(255,255,255,0.08)",
+                        backdropFilter: "blur(20px)",
+                        border: "1px solid rgba(255,255,255,0.12)",
+                        boxShadow: "0 0 40px rgba(99,102,241,0.3)",
+                    }}
+                >
+                    <span
+                        className="material-symbols-outlined text-white text-4xl"
+                        style={{ animation: done ? "none" : "icon-spin 3s linear infinite" }}
+                    >
+                        {done ? "check_circle" : "smart_toy"}
+                    </span>
                 </div>
 
-                <h1 className="text-2xl font-bold text-white mb-2">Generating Your Plan</h1>
-                <p className="text-indigo-200 text-sm mb-8">
-                    AI agents are crafting your SDLC plan{".".repeat(dotCount + 1)}
-                </p>
+                <h1 className="text-3xl font-bold text-white mb-1">
+                    {done ? "Plan Ready!" : "Generating Your Plan"}
+                </h1>
+                <p className="text-indigo-300 text-sm mb-2">{statusLabel}</p>
+
+                {/* Elapsed time */}
+                {!done && (
+                    <p className="text-indigo-400 text-xs mb-6 font-mono">
+                        ⏱ {formatElapsed(elapsed)} elapsed
+                    </p>
+                )}
 
                 {/* Progress Bar */}
-                <div className="h-2 rounded-full mb-8 overflow-hidden" style={{ background: "rgba(255,255,255,0.15)" }}>
-                    <div className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${Math.max(10, progress)}%`, background: "linear-gradient(90deg, #6366F1, #A855F7, #EC4899)" }}
+                <div
+                    className="h-2 rounded-full mb-6 overflow-hidden"
+                    style={{ background: "rgba(255,255,255,0.1)" }}
+                >
+                    <div
+                        className="h-full rounded-full transition-all duration-700"
+                        style={{
+                            width: `${progress}%`,
+                            background: done
+                                ? "linear-gradient(90deg, #10b981, #34d399)"
+                                : "linear-gradient(90deg, #6366F1, #A855F7, #EC4899)",
+                        }}
                     />
                 </div>
 
-                {/* Step indicators */}
-                <div className="space-y-3 mb-10">
-                    {steps.map((step, i) => {
-                        const done = i < currentStep;
-                        const active = i === currentStep;
+                {/* Step indicators — real steps from backend */}
+                <div className="space-y-2 mb-8">
+                    {STEPS.map((s) => {
+                        const isDone = s.step < currentStep || (done && !error);
+                        const isActive = s.step === currentStep && !done;
+                        const isPending = s.step > currentStep;
+
                         return (
-                            <div key={step.id}
-                                className="flex items-center gap-3 p-3 rounded-xl transition-all"
+                            <div
+                                key={s.step}
+                                className="flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-500"
                                 style={{
-                                    background: active ? "rgba(255,255,255,0.15)" : done ? "rgba(99,102,241,0.15)" : "rgba(255,255,255,0.04)",
-                                    opacity: i > currentStep + 1 ? 0.4 : 1,
+                                    background: isActive
+                                        ? "rgba(99,102,241,0.2)"
+                                        : isDone
+                                            ? "rgba(16,185,129,0.1)"
+                                            : "rgba(255,255,255,0.03)",
+                                    border: isActive
+                                        ? "1px solid rgba(99,102,241,0.4)"
+                                        : isDone
+                                            ? "1px solid rgba(16,185,129,0.2)"
+                                            : "1px solid transparent",
+                                    opacity: isPending ? 0.35 : 1,
+                                    transform: isActive ? "scale(1.02)" : "scale(1)",
                                 }}
                             >
-                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${done ? "bg-emerald-500" : active ? "bg-indigo-500" : "bg-white/10"}`}>
-                                    {done
-                                        ? <span className="material-symbols-outlined text-white text-sm">check</span>
-                                        : active
-                                            ? <span className="material-symbols-outlined text-white text-sm" style={{ animation: "spin 1.5s linear infinite" }}>refresh</span>
-                                            : <span className="material-symbols-outlined text-white/50 text-sm">{step.icon}</span>}
+                                {/* Step circle */}
+                                <div
+                                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                                    style={{
+                                        background: isDone
+                                            ? "#10b981"
+                                            : isActive
+                                                ? "#6366F1"
+                                                : "rgba(255,255,255,0.08)",
+                                    }}
+                                >
+                                    {isDone ? (
+                                        <span className="material-symbols-outlined text-white" style={{ fontSize: "16px" }}>check</span>
+                                    ) : isActive ? (
+                                        <span
+                                            className="material-symbols-outlined text-white"
+                                            style={{ fontSize: "16px", animation: "icon-spin 1.2s linear infinite" }}
+                                        >
+                                            refresh
+                                        </span>
+                                    ) : (
+                                        <span className="material-symbols-outlined text-white/40" style={{ fontSize: "16px" }}>{s.icon}</span>
+                                    )}
                                 </div>
-                                <span className={`text-sm font-medium ${done ? "text-emerald-300" : active ? "text-white" : "text-white/40"}`}>
-                                    {step.label}
+
+                                {/* Step label */}
+                                <span
+                                    className="text-sm font-medium text-left flex-1"
+                                    style={{
+                                        color: isDone ? "#6ee7b7" : isActive ? "#fff" : "rgba(255,255,255,0.35)",
+                                    }}
+                                >
+                                    {s.label}
                                 </span>
+
+                                {/* Status badge */}
+                                {isDone && (
+                                    <span className="text-xs text-emerald-400 font-semibold">Done</span>
+                                )}
+                                {isActive && (
+                                    <span className="text-xs text-indigo-300 font-semibold animate-pulse">Running</span>
+                                )}
                             </div>
                         );
                     })}
                 </div>
 
+                {/* Background notice */}
+                <p className="text-indigo-400/60 text-xs mb-4">
+                    💡 You can navigate away — generation continues in the background
+                </p>
+
                 {error && (
-                    <div className="mb-6 p-4 rounded-xl bg-red-500/20 border border-red-400/30 text-red-200 text-sm">
+                    <div className="mb-4 p-4 rounded-xl bg-red-500/15 border border-red-400/30 text-red-300 text-sm">
                         {error}
                     </div>
                 )}
 
                 <button
-                    onClick={() => { if (pollRef.current) clearInterval(pollRef.current); router.push("/projects"); }}
-                    className="text-sm text-indigo-300 hover:text-white transition-colors"
+                    onClick={() => {
+                        if (pollRef.current) clearInterval(pollRef.current);
+                        if (cleanupSSE.current) cleanupSSE.current();
+                        router.push("/projects");
+                    }}
+                    className="text-sm text-indigo-400 hover:text-white transition-colors underline underline-offset-4"
                 >
-                    Cancel and return to projects
+                    Return to projects
                 </button>
             </div>
 
             <style>{`
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%,100% { opacity:0.1; transform:scale(1); } 50% { opacity:0.2; transform:scale(1.05); } }
-      `}</style>
+                @keyframes orb-pulse {
+                    0% { transform: scale(1); opacity: 0.06; }
+                    100% { transform: scale(1.15); opacity: 0.12; }
+                }
+                @keyframes icon-spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `}</style>
         </div>
     );
 }
@@ -165,8 +294,8 @@ function GeneratingContent() {
 export default function GeneratingPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-[#1e1b4b] flex items-center justify-center">
-                <div className="text-white text-sm opacity-50">Initializing AI system...</div>
+            <div className="min-h-screen bg-[#0f0c29] flex items-center justify-center">
+                <div className="text-white text-sm opacity-40">Initializing AI pipeline…</div>
             </div>
         }>
             <GeneratingContent />

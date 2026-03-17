@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { getLLM, AI_MODE } from "../lib/llm";
+import { getLLM, AI_MODE, withRetry } from "../lib/llm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { GeneratedEpic } from "./epicGenerator";
@@ -79,11 +79,12 @@ function mockTasks(epics: GeneratedEpic[]): GeneratedTask[] {
 // ─── Real LLM ────────────────────────────────────────────────────────────────
 
 async function realTasks(epics: GeneratedEpic[], requirements: Requirements): Promise<GeneratedTask[]> {
-    const llm = getLLM("gpt-4o");
-    const all: GeneratedTask[] = [];
+    const llm = getLLM();
 
-    for (const epic of epics) {
-        const prompt = ChatPromptTemplate.fromTemplate(`
+    // ── Parallel: all epics processed simultaneously ──────────────────────────
+    const epicResults = await Promise.all(
+        epics.map(async (epic) => {
+            const prompt = ChatPromptTemplate.fromTemplate(`
 You are a senior tech lead. Break down this epic into 4-6 specific, actionable engineering tasks.
 Each task should be completable by one developer in 4-24 hours.
 
@@ -107,18 +108,21 @@ Respond ONLY with valid JSON:
   ]
 }}
 `);
-        const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
-        const result = await chain.invoke({
-            epicName: epic.name,
-            epicGoal: epic.goal,
-            productName: requirements.productName,
-            coreObjective: requirements.coreObjective,
-            techStack: requirements.techStack.join(", "),
-        });
-        const parsed = TasksForEpicSchema.parse(result);
-        parsed.tasks.forEach((t) => all.push({ ...t, epicCode: epic.code }));
-    }
-    return all;
+            const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
+            const result = await withRetry(() => chain.invoke({
+                epicName: epic.name,
+                epicGoal: epic.goal,
+                productName: requirements.productName,
+                coreObjective: requirements.coreObjective,
+                techStack: requirements.techStack.join(", "),
+            }));
+            const parsed = TasksForEpicSchema.parse(result);
+            console.log(`  ✓ Tasks generated for epic: ${epic.code} (${parsed.tasks.length} tasks)`);
+            return parsed.tasks.map((t) => ({ ...t, epicCode: epic.code }));
+        })
+    );
+
+    return epicResults.flat();
 }
 
 // ─── Exported Agent ──────────────────────────────────────────────────────────

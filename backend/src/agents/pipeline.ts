@@ -14,6 +14,40 @@ export interface PipelineResult {
     error?: string;
 }
 
+// ─── Progress Store ────────────────────────────────────────────────────────────
+// In-memory store for real-time step progress. Queried by the SSE endpoint.
+
+export interface PipelineProgress {
+    step: number;       // 0 = not started, 1-5 = agent steps, 6 = done
+    stepLabel: string;
+    done: boolean;
+    error?: string;
+    startedAt: number;  // epoch ms
+}
+
+const progressStore = new Map<string, PipelineProgress>();
+
+export function getProgress(projectId: string): PipelineProgress | undefined {
+    return progressStore.get(projectId);
+}
+
+function setProgress(
+    projectId: string,
+    step: number,
+    stepLabel: string,
+    done = false,
+    error?: string
+) {
+    const existing = progressStore.get(projectId);
+    progressStore.set(projectId, {
+        step,
+        stepLabel,
+        done,
+        error,
+        startedAt: existing?.startedAt ?? Date.now(),
+    });
+}
+
 // ─── Main Pipeline ────────────────────────────────────────────────────────────
 // Flow: Project → Requirements → Epics → Tasks → Assignments → Risks → Save
 
@@ -27,11 +61,12 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
 
         if (!project) return { success: false, error: "Project not found" };
 
-        // Mark as generating
+        // Mark as generating + init progress
         await prisma.project.update({
             where: { id: projectId },
             data: { status: "GENERATING" },
         });
+        setProgress(projectId, 0, "Starting AI pipeline…");
 
         // 2. Clean up any previously generated plan
         await prisma.epic.deleteMany({ where: { projectId } });
@@ -48,7 +83,9 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
             weeklyHours: m.weeklyHours,
         }));
 
-        // 4. Requirements Agent
+        // ── Step 1: Requirements ──────────────────────────────────────────────
+        setProgress(projectId, 1, "Parsing product requirements");
+        console.log("🔍 [1/5] Requirements Agent...");
         const requirements = await requirementsAgent({
             name: project.name,
             description: project.description,
@@ -57,11 +94,15 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
             priorities: JSON.parse(project.priorities),
             timeline: project.timeline,
         });
+        console.log(`  ✓ Requirements parsed (complexity: ${requirements.complexityLevel}, epics: ${requirements.suggestedEpicCount})`);
 
-        // 5. Epic Generator
+        // ── Step 2: Epics ─────────────────────────────────────────────────────
+        setProgress(projectId, 2, "Generating SDLC epics");
+        console.log("📋 [2/5] Epic Generator...");
         const generatedEpics = await epicGenerator(requirements);
+        console.log(`  ✓ ${generatedEpics.length} epics generated`);
 
-        // 6. Save Epics to DB
+        // Save Epics to DB
         const savedEpics = await Promise.all(
             generatedEpics.map((epic) =>
                 prisma.epic.create({
@@ -79,13 +120,19 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
             )
         );
 
-        // 7. Task Breaker
+        // ── Step 3: Tasks (parallel) ──────────────────────────────────────────
+        setProgress(projectId, 3, "Breaking epics into tasks");
+        console.log("🔨 [3/5] Task Breaker (parallel)...");
         const generatedTasks = await taskBreaker(generatedEpics, requirements);
+        console.log(`  ✓ ${generatedTasks.length} tasks generated across ${generatedEpics.length} epics`);
 
-        // 8. Assignment Agent
+        // ── Step 4: Assignments (single batch call) ───────────────────────────
+        setProgress(projectId, 4, "Assigning tasks to team");
+        console.log("👤 [4/5] Assignment Agent (batch)...");
         const assignedTasks = await assignmentAgent(generatedTasks, team);
+        console.log(`  ✓ ${assignedTasks.length} tasks assigned`);
 
-        // 9. Save Tasks to DB (link to epic by code)
+        // Save Tasks to DB (link to epic by code)
         const epicCodeToId: Record<string, string> = {};
         generatedEpics.forEach((e, i) => { epicCodeToId[e.code] = savedEpics[i].id; });
 
@@ -119,20 +166,25 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
             });
         }
 
-        // 10. Update epicTaskCount and totalHours
-        for (const savedEpic of savedEpics) {
-            const tasks = await prisma.task.findMany({ where: { epicId: savedEpic.id } });
-            const totalHours = tasks.reduce((s, t) => s + t.effort, 0);
-            await prisma.epic.update({
-                where: { id: savedEpic.id },
-                data: { taskCount: tasks.length, totalHours },
-            });
-        }
+        // Update epicTaskCount and totalHours
+        await Promise.all(
+            savedEpics.map(async (savedEpic) => {
+                const tasks = await prisma.task.findMany({ where: { epicId: savedEpic.id } });
+                const totalHours = tasks.reduce((s, t) => s + t.effort, 0);
+                await prisma.epic.update({
+                    where: { id: savedEpic.id },
+                    data: { taskCount: tasks.length, totalHours },
+                });
+            })
+        );
 
-        // 11. Risk Detector
+        // ── Step 5: Risks ─────────────────────────────────────────────────────
+        setProgress(projectId, 5, "Detecting risks & warnings");
+        console.log("⚠️  [5/5] Risk Detector...");
         const generatedWarnings = await riskDetector(assignedTasks, team, generatedEpics);
+        console.log(`  ✓ ${generatedWarnings.length} warnings detected`);
 
-        // 12. Save Warnings
+        // Save Warnings
         for (const w of generatedWarnings) {
             await prisma.warning.create({
                 data: {
@@ -148,29 +200,31 @@ export async function runPipeline(projectId: string): Promise<PipelineResult> {
             });
         }
 
-        // 13. Mark project as IN_PLANNING
-        const totalTasks = assignedTasks.length;
-        const allEpics = await prisma.epic.findMany({ where: { projectId } });
+        // 13. Mark project as IN_PLANNING & done
         await prisma.project.update({
             where: { id: projectId },
-            data: {
-                status: "IN_PLANNING",
-                progress: 0,
-            },
+            data: { status: "IN_PLANNING", progress: 0 },
         });
+
+        const elapsed = ((Date.now() - (progressStore.get(projectId)?.startedAt ?? Date.now())) / 1000).toFixed(1);
+        console.log(`✅ Pipeline complete for project ${projectId} in ${elapsed}s`);
+        setProgress(projectId, 6, "Plan ready!", true);
+
+        // Clean up progress after 30s
+        setTimeout(() => progressStore.delete(projectId), 30_000);
 
         return { success: true };
     } catch (error) {
         console.error("Pipeline error:", error);
-        // Mark project as failed
+        const msg = error instanceof Error ? error.message : "Unknown pipeline error";
+        setProgress(projectId, 0, "Pipeline failed", true, msg);
+
         await prisma.project.update({
             where: { id: projectId },
             data: { status: "DRAFT" },
         }).catch(() => { });
 
-        return {
-            success: false,
-            error: error instanceof Error ? error.message : "Unknown pipeline error",
-        };
+        setTimeout(() => progressStore.delete(projectId), 30_000);
+        return { success: false, error: msg };
     }
 }

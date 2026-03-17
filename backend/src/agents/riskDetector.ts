@@ -1,4 +1,4 @@
-import { AI_MODE, getLLM } from "../lib/llm";
+import { AI_MODE, getLLM, withRetry } from "../lib/llm";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { JsonOutputParser } from "@langchain/core/output_parsers";
 import { AssignedTask, TeamMemberInput } from "./assignmentAgent";
@@ -106,7 +106,7 @@ async function realRisks(
     team: TeamMemberInput[],
     epics: GeneratedEpic[]
 ): Promise<GeneratedWarning[]> {
-    const llm = getLLM("gpt-4o-mini");
+    const llm = getLLM("openai/gpt-oss-120b");
 
     const taskSummary = tasks
         .slice(0, 20)
@@ -137,13 +137,13 @@ Respond ONLY with valid JSON array:
 `);
 
     const chain = prompt.pipe(llm).pipe(new JsonOutputParser());
-    const result = (await chain.invoke({
+    const result = (await withRetry(() => chain.invoke({
         teamSize: String(team.length),
         taskCount: String(tasks.length),
         totalHours: String(tasks.reduce((s, t) => s + t.effort, 0)),
         epicCount: String(epics.length),
         tasks: taskSummary,
-    })) as GeneratedWarning[];
+    }))) as GeneratedWarning[];
 
     return Array.isArray(result) ? result : [];
 }
